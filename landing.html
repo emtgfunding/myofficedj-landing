@@ -1,0 +1,1302 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MyOfficeDJ — The Office Jukebox That Runs Itself</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Cabinet+Grotesk:wght@400;500;700;800&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --white: #ffffff;
+    --off-white: #f7f6f3;
+    --ink: #0f0e0c;
+    --ink2: #3a3830;
+    --ink3: #8a8578;
+    --blue: #1a56db;
+    --blue-light: #e8effd;
+    --green: #0d7a55;
+    --green-light: #e6f4ef;
+    --amber: #c47c0e;
+    --amber-light: #fdf3e0;
+    --border: #e4e2dc;
+    --radius: 16px;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  
+  html { scroll-behavior: smooth; }
+
+  body {
+    font-family: 'Cabinet Grotesk', sans-serif;
+    background: var(--off-white);
+    color: var(--ink);
+    overflow-x: hidden;
+  }
+
+  /* ── NOISE TEXTURE ── */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 512 512' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.035'/%3E%3C/svg%3E");
+    pointer-events: none;
+    z-index: 9999;
+    opacity: 0.5;
+  }
+
+  /* ── NAV ── */
+  nav {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 100;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 40px;
+    height: 64px;
+    background: rgba(247,246,243,0.85);
+    backdrop-filter: blur(16px);
+    border-bottom: 1px solid var(--border);
+  }
+
+  .nav-logo {
+    font-family: 'Instrument Serif', serif;
+    font-size: 22px;
+    color: var(--ink);
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .nav-logo span { color: var(--blue); }
+
+  .nav-links {
+    display: flex;
+    align-items: center;
+    gap: 32px;
+    list-style: none;
+  }
+
+  .nav-links a {
+    color: var(--ink2);
+    text-decoration: none;
+    font-size: 14px;
+    font-weight: 500;
+    transition: color 0.2s;
+  }
+
+  .nav-links a:hover { color: var(--blue); }
+
+  .nav-cta {
+    background: var(--ink);
+    color: var(--white) !important;
+    padding: 8px 20px;
+    border-radius: 100px;
+    font-weight: 700 !important;
+    transition: background 0.2s !important;
+  }
+
+  .nav-cta:hover { background: var(--blue) !important; color: var(--white) !important; }
+
+  /* ── HERO ── */
+  .hero {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 100px 40px 80px;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .hero-bg {
+    position: absolute;
+    inset: 0;
+    background:
+      radial-gradient(ellipse 70% 50% at 50% 0%, rgba(26,86,219,0.08) 0%, transparent 70%),
+      radial-gradient(ellipse 40% 30% at 80% 80%, rgba(13,122,85,0.06) 0%, transparent 70%);
+    pointer-events: none;
+  }
+
+  /* Vinyl record decorative element */
+  .vinyl {
+    position: absolute;
+    right: -80px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 420px;
+    height: 420px;
+    border-radius: 50%;
+    background: conic-gradient(
+      #1a1a1a 0deg, #2a2a2a 10deg, #1a1a1a 20deg, #2a2a2a 30deg,
+      #1a1a1a 40deg, #2a2a2a 50deg, #1a1a1a 60deg, #2a2a2a 70deg,
+      #1a1a1a 80deg, #2a2a2a 90deg, #1a1a1a 100deg, #2a2a2a 110deg,
+      #1a1a1a 120deg, #2a2a2a 130deg, #1a1a1a 140deg, #2a2a2a 150deg,
+      #1a1a1a 160deg, #2a2a2a 170deg, #1a1a1a 180deg, #2a2a2a 190deg,
+      #1a1a1a 200deg, #2a2a2a 210deg, #1a1a1a 220deg, #2a2a2a 230deg,
+      #1a1a1a 240deg, #2a2a2a 250deg, #1a1a1a 260deg, #2a2a2a 270deg,
+      #1a1a1a 280deg, #2a2a2a 290deg, #1a1a1a 300deg, #2a2a2a 310deg,
+      #1a1a1a 320deg, #2a2a2a 330deg, #1a1a1a 340deg, #2a2a2a 350deg,
+      #1a1a1a 360deg
+    );
+    opacity: 0.07;
+    animation: spin 20s linear infinite;
+  }
+
+  .vinyl::after {
+    content: '';
+    position: absolute;
+    inset: 30%;
+    border-radius: 50%;
+    background: var(--off-white);
+  }
+
+  .vinyl-left {
+    right: auto;
+    left: -100px;
+    width: 300px;
+    height: 300px;
+    animation-direction: reverse;
+    animation-duration: 15s;
+    top: 20%;
+    transform: none;
+    opacity: 0.05;
+  }
+
+  @keyframes spin {
+    from { transform: translateY(-50%) rotate(0deg); }
+    to { transform: translateY(-50%) rotate(360deg); }
+  }
+
+  .vinyl-left { animation: spinLeft 15s linear infinite; }
+  @keyframes spinLeft {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(-360deg); }
+  }
+
+  .hero-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: var(--blue-light);
+    color: var(--blue);
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    padding: 6px 16px;
+    border-radius: 100px;
+    border: 1px solid rgba(26,86,219,0.2);
+    margin-bottom: 28px;
+    animation: fadeUp 0.6s both;
+  }
+
+  .hero-badge-dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--blue);
+    animation: pulse 2s infinite;
+  }
+
+  @keyframes pulse {
+    0%, 100% { opacity: 1; transform: scale(1); }
+    50% { opacity: 0.5; transform: scale(0.8); }
+  }
+
+  h1 {
+    font-family: 'Instrument Serif', serif;
+    font-size: clamp(52px, 8vw, 96px);
+    line-height: 1.0;
+    color: var(--ink);
+    margin-bottom: 24px;
+    max-width: 800px;
+    animation: fadeUp 0.6s 0.1s both;
+  }
+
+  h1 em {
+    font-style: italic;
+    color: var(--blue);
+  }
+
+  .hero-sub {
+    font-size: clamp(16px, 2vw, 20px);
+    color: var(--ink3);
+    max-width: 520px;
+    line-height: 1.6;
+    margin-bottom: 40px;
+    animation: fadeUp 0.6s 0.2s both;
+  }
+
+  .hero-actions {
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+    justify-content: center;
+    animation: fadeUp 0.6s 0.3s both;
+  }
+
+  .btn-primary {
+    background: var(--ink);
+    color: var(--white);
+    padding: 14px 32px;
+    border-radius: 100px;
+    font-size: 15px;
+    font-weight: 700;
+    text-decoration: none;
+    transition: all 0.2s;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    border: 2px solid var(--ink);
+  }
+
+  .btn-primary:hover {
+    background: var(--blue);
+    border-color: var(--blue);
+    transform: translateY(-2px);
+    box-shadow: 0 8px 24px rgba(26,86,219,0.25);
+  }
+
+  .btn-secondary {
+    background: transparent;
+    color: var(--ink);
+    padding: 14px 32px;
+    border-radius: 100px;
+    font-size: 15px;
+    font-weight: 600;
+    text-decoration: none;
+    transition: all 0.2s;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    border: 2px solid var(--border);
+  }
+
+  .btn-secondary:hover {
+    border-color: var(--ink);
+    transform: translateY(-2px);
+  }
+
+  /* ── SOCIAL PROOF STRIP ── */
+  .proof-strip {
+    padding: 20px 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 40px;
+    border-top: 1px solid var(--border);
+    border-bottom: 1px solid var(--border);
+    background: var(--white);
+    flex-wrap: wrap;
+    animation: fadeUp 0.6s 0.4s both;
+  }
+
+  .proof-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    color: var(--ink2);
+    font-size: 14px;
+    font-weight: 500;
+  }
+
+  .proof-icon {
+    width: 32px;
+    height: 32px;
+    border-radius: 8px;
+    background: var(--off-white);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 16px;
+  }
+
+  /* ── HOW IT WORKS ── */
+  .section {
+    padding: 100px 40px;
+    max-width: 1100px;
+    margin: 0 auto;
+  }
+
+  .section-label {
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--blue);
+    margin-bottom: 12px;
+  }
+
+  .section-title {
+    font-family: 'Instrument Serif', serif;
+    font-size: clamp(36px, 5vw, 56px);
+    line-height: 1.1;
+    color: var(--ink);
+    margin-bottom: 16px;
+    max-width: 600px;
+  }
+
+  .section-sub {
+    font-size: 17px;
+    color: var(--ink3);
+    max-width: 500px;
+    line-height: 1.6;
+    margin-bottom: 60px;
+  }
+
+  /* Steps */
+  .steps {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 2px;
+    background: var(--border);
+    border-radius: 20px;
+    overflow: hidden;
+  }
+
+  .step {
+    background: var(--white);
+    padding: 36px 32px;
+    position: relative;
+  }
+
+  .step:first-child { border-radius: 20px 0 0 20px; }
+  .step:last-child { border-radius: 0 20px 20px 0; }
+
+  .step-num {
+    font-family: 'Instrument Serif', serif;
+    font-size: 64px;
+    color: var(--blue-light);
+    line-height: 1;
+    margin-bottom: 16px;
+    display: block;
+  }
+
+  .step h3 {
+    font-size: 18px;
+    font-weight: 700;
+    color: var(--ink);
+    margin-bottom: 10px;
+  }
+
+  .step p {
+    font-size: 14px;
+    color: var(--ink3);
+    line-height: 1.6;
+  }
+
+  /* ── FOR WHO ── */
+  .use-cases {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 24px;
+    margin-top: 20px;
+  }
+
+  .use-card {
+    background: var(--white);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 36px;
+    transition: all 0.25s;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .use-card:hover {
+    border-color: var(--blue);
+    box-shadow: 0 12px 40px rgba(26,86,219,0.08);
+    transform: translateY(-4px);
+  }
+
+  .use-card-accent {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 3px;
+  }
+
+  .use-card.office .use-card-accent { background: var(--blue); }
+  .use-card.room .use-card-accent { background: var(--green); }
+
+  .use-tag {
+    display: inline-block;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    padding: 4px 12px;
+    border-radius: 100px;
+    margin-bottom: 20px;
+  }
+
+  .use-card.office .use-tag { background: var(--blue-light); color: var(--blue); }
+  .use-card.room .use-tag { background: var(--green-light); color: var(--green); }
+
+  .use-card h3 {
+    font-family: 'Instrument Serif', serif;
+    font-size: 28px;
+    color: var(--ink);
+    margin-bottom: 12px;
+    line-height: 1.2;
+  }
+
+  .use-card p {
+    font-size: 15px;
+    color: var(--ink3);
+    line-height: 1.65;
+    margin-bottom: 24px;
+  }
+
+  .use-features {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .use-features li {
+    font-size: 14px;
+    color: var(--ink2);
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    line-height: 1.4;
+  }
+
+  .use-features li::before {
+    content: '✓';
+    font-weight: 700;
+    flex-shrink: 0;
+    margin-top: 1px;
+  }
+
+  .use-card.office .use-features li::before { color: var(--blue); }
+  .use-card.room .use-features li::before { color: var(--green); }
+
+  /* ── PRICING ── */
+  .pricing-wrap {
+    background: var(--white);
+    border: 1px solid var(--border);
+    border-radius: 24px;
+    overflow: hidden;
+  }
+
+  .pricing-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+  }
+
+  .price-card {
+    padding: 40px 36px;
+    border-right: 1px solid var(--border);
+    position: relative;
+  }
+
+  .price-card:last-child { border-right: none; }
+
+  .price-card.featured {
+    background: var(--ink);
+    color: var(--white);
+  }
+
+  .price-label {
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--ink3);
+    margin-bottom: 20px;
+  }
+
+  .price-card.featured .price-label { color: rgba(255,255,255,0.5); }
+
+  .price-amount {
+    font-family: 'Instrument Serif', serif;
+    font-size: 52px;
+    line-height: 1;
+    color: var(--ink);
+    margin-bottom: 4px;
+  }
+
+  .price-card.featured .price-amount { color: var(--white); }
+
+  .price-per {
+    font-size: 13px;
+    color: var(--ink3);
+    margin-bottom: 24px;
+  }
+
+  .price-card.featured .price-per { color: rgba(255,255,255,0.5); }
+
+  .price-desc {
+    font-size: 14px;
+    color: var(--ink3);
+    line-height: 1.6;
+    margin-bottom: 28px;
+  }
+
+  .price-card.featured .price-desc { color: rgba(255,255,255,0.7); }
+
+  .price-features {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-bottom: 32px;
+  }
+
+  .price-features li {
+    font-size: 13px;
+    color: var(--ink2);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .price-card.featured .price-features li { color: rgba(255,255,255,0.8); }
+
+  .price-features li::before {
+    content: '✓';
+    font-weight: 700;
+    color: var(--blue);
+    flex-shrink: 0;
+  }
+
+  .price-card.featured .price-features li::before { color: #7dd3fc; }
+
+  .price-btn {
+    display: block;
+    text-align: center;
+    padding: 12px 24px;
+    border-radius: 100px;
+    font-size: 14px;
+    font-weight: 700;
+    text-decoration: none;
+    transition: all 0.2s;
+  }
+
+  .price-btn-outline {
+    border: 2px solid var(--border);
+    color: var(--ink);
+  }
+
+  .price-btn-outline:hover {
+    border-color: var(--ink);
+    background: var(--off-white);
+  }
+
+  .price-btn-primary {
+    background: var(--blue);
+    color: var(--white);
+    border: 2px solid var(--blue);
+  }
+
+  .price-btn-primary:hover {
+    background: #1248b3;
+    transform: translateY(-1px);
+    box-shadow: 0 6px 20px rgba(26,86,219,0.3);
+  }
+
+  .price-btn-dark {
+    background: var(--white);
+    color: var(--ink);
+    border: 2px solid var(--white);
+  }
+
+  .price-btn-dark:hover {
+    background: var(--off-white);
+    transform: translateY(-1px);
+  }
+
+  /* ── FEATURES GRID ── */
+  .features-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1px;
+    background: var(--border);
+    border-radius: 20px;
+    overflow: hidden;
+  }
+
+  .feature-card {
+    background: var(--white);
+    padding: 32px 28px;
+  }
+
+  .feature-card:nth-child(1) { border-radius: 20px 0 0 0; }
+  .feature-card:nth-child(3) { border-radius: 0 20px 0 0; }
+  .feature-card:nth-child(4) { border-radius: 0 0 0 20px; }
+  .feature-card:nth-child(6) { border-radius: 0 0 20px 0; }
+
+  .feature-icon {
+    width: 44px;
+    height: 44px;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 20px;
+    margin-bottom: 16px;
+  }
+
+  .fi-blue { background: var(--blue-light); }
+  .fi-green { background: var(--green-light); }
+  .fi-amber { background: var(--amber-light); }
+
+  .feature-card h3 {
+    font-size: 16px;
+    font-weight: 700;
+    color: var(--ink);
+    margin-bottom: 8px;
+  }
+
+  .feature-card p {
+    font-size: 13px;
+    color: var(--ink3);
+    line-height: 1.6;
+  }
+
+  /* ── CTA SECTION ── */
+  .cta-section {
+    margin: 0 40px 100px;
+    background: var(--ink);
+    border-radius: 28px;
+    padding: 80px 60px;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .cta-section::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background:
+      radial-gradient(ellipse 60% 80% at 20% 50%, rgba(26,86,219,0.3) 0%, transparent 60%),
+      radial-gradient(ellipse 40% 60% at 80% 50%, rgba(13,122,85,0.2) 0%, transparent 60%);
+    pointer-events: none;
+  }
+
+  .cta-section h2 {
+    font-family: 'Instrument Serif', serif;
+    font-size: clamp(36px, 5vw, 60px);
+    color: var(--white);
+    margin-bottom: 16px;
+    position: relative;
+    line-height: 1.1;
+  }
+
+  .cta-section h2 em { color: #7dd3fc; font-style: italic; }
+
+  .cta-section p {
+    font-size: 17px;
+    color: rgba(255,255,255,0.6);
+    margin-bottom: 40px;
+    position: relative;
+    max-width: 480px;
+    margin-left: auto;
+    margin-right: auto;
+    line-height: 1.6;
+  }
+
+  .cta-actions {
+    display: flex;
+    gap: 12px;
+    justify-content: center;
+    flex-wrap: wrap;
+    position: relative;
+  }
+
+  .btn-white {
+    background: var(--white);
+    color: var(--ink);
+    padding: 14px 32px;
+    border-radius: 100px;
+    font-size: 15px;
+    font-weight: 700;
+    text-decoration: none;
+    transition: all 0.2s;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .btn-white:hover {
+    background: var(--off-white);
+    transform: translateY(-2px);
+    box-shadow: 0 8px 24px rgba(0,0,0,0.3);
+  }
+
+  .btn-ghost-white {
+    background: transparent;
+    color: rgba(255,255,255,0.8);
+    padding: 14px 32px;
+    border-radius: 100px;
+    font-size: 15px;
+    font-weight: 600;
+    text-decoration: none;
+    transition: all 0.2s;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    border: 2px solid rgba(255,255,255,0.25);
+  }
+
+  .btn-ghost-white:hover {
+    border-color: rgba(255,255,255,0.6);
+    color: var(--white);
+    transform: translateY(-2px);
+  }
+
+  /* ── FOOTER ── */
+  footer {
+    border-top: 1px solid var(--border);
+    padding: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 20px;
+  }
+
+  .footer-logo {
+    font-family: 'Instrument Serif', serif;
+    font-size: 18px;
+    color: var(--ink);
+  }
+
+  .footer-logo span { color: var(--blue); }
+
+  .footer-links {
+    display: flex;
+    gap: 28px;
+    list-style: none;
+  }
+
+  .footer-links a {
+    color: var(--ink3);
+    text-decoration: none;
+    font-size: 13px;
+    transition: color 0.2s;
+  }
+
+  .footer-links a:hover { color: var(--ink); }
+
+  .footer-copy {
+    font-size: 13px;
+    color: var(--ink3);
+  }
+
+  /* ── ANIMATIONS ── */
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(24px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .fade-in {
+    opacity: 0;
+    transform: translateY(20px);
+    transition: opacity 0.6s, transform 0.6s;
+  }
+
+  .fade-in.visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  /* ── APP MOCKUP ── */
+  .mockup-strip {
+    padding: 60px 40px;
+    background: var(--white);
+    border-top: 1px solid var(--border);
+    border-bottom: 1px solid var(--border);
+    overflow: hidden;
+  }
+
+  .mockup-inner {
+    max-width: 900px;
+    margin: 0 auto;
+    background: #f8f7ff;
+    border-radius: 20px;
+    border: 1px solid #e2e0f5;
+    overflow: hidden;
+    box-shadow: 0 20px 60px rgba(26,86,219,0.08);
+  }
+
+  .mockup-header {
+    background: rgba(255,255,255,0.95);
+    border-bottom: 1px solid #e2e0f5;
+    padding: 10px 20px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .mockup-logo {
+    font-family: 'Instrument Serif', serif;
+    font-size: 16px;
+    color: var(--ink);
+  }
+
+  .mockup-logo span { color: var(--blue); }
+
+  .mockup-sub { font-size: 10px; color: var(--ink3); }
+
+  .mockup-credits {
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--blue);
+  }
+
+  .mockup-tabs {
+    display: flex;
+    background: rgba(255,255,255,0.9);
+    border-bottom: 1px solid #e2e0f5;
+  }
+
+  .mockup-tab {
+    flex: 1;
+    padding: 10px;
+    text-align: center;
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--ink3);
+    border-bottom: 2px solid transparent;
+  }
+
+  .mockup-tab.active {
+    color: var(--blue);
+    border-bottom-color: var(--blue);
+  }
+
+  .mockup-body {
+    padding: 20px;
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 10px;
+  }
+
+  .mockup-card {
+    background: var(--white);
+    border-radius: 12px;
+    padding: 14px;
+    border: 1px solid rgba(26,86,219,0.1);
+  }
+
+  .mockup-song {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 10px;
+  }
+
+  .mockup-art {
+    width: 36px;
+    height: 36px;
+    border-radius: 6px;
+    flex-shrink: 0;
+  }
+
+  .mockup-art-1 { background: linear-gradient(135deg, #667eea, #764ba2); }
+  .mockup-art-2 { background: linear-gradient(135deg, #f093fb, #f5576c); }
+  .mockup-art-3 { background: linear-gradient(135deg, #4facfe, #00f2fe); }
+
+  .mockup-song-title { font-size: 11px; font-weight: 700; color: var(--ink); }
+  .mockup-song-artist { font-size: 10px; color: var(--ink3); }
+
+  .mockup-vote-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 4px;
+  }
+
+  .mockup-vote {
+    text-align: center;
+    padding: 5px 4px;
+    border-radius: 6px;
+    font-size: 9px;
+    font-weight: 700;
+  }
+
+  .mv-up { background: #f0fdf4; color: #16a34a; }
+  .mv-down { background: #fef2f2; color: #dc2626; }
+  .mv-one { background: #fffbeb; color: #d97706; }
+  .mv-guard { background: #eff6ff; color: var(--blue); }
+
+  .mockup-pos {
+    font-size: 10px;
+    font-weight: 700;
+    color: var(--ink3);
+    margin-bottom: 8px;
+  }
+
+  /* ── RESPONSIVE ── */
+  @media (max-width: 768px) {
+    nav { padding: 0 20px; }
+    .nav-links { display: none; }
+    .hero { padding: 100px 24px 60px; }
+    .vinyl { display: none; }
+    .section { padding: 60px 24px; }
+    .steps { grid-template-columns: 1fr; }
+    .step:first-child, .step:last-child { border-radius: 0; }
+    .use-cases { grid-template-columns: 1fr; }
+    .pricing-grid { grid-template-columns: 1fr; }
+    .price-card { border-right: none; border-bottom: 1px solid rgba(255,255,255,0.1); }
+    .features-grid { grid-template-columns: 1fr 1fr; }
+    .cta-section { margin: 0 20px 60px; padding: 50px 28px; }
+    .mockup-body { grid-template-columns: 1fr; }
+    footer { flex-direction: column; align-items: flex-start; }
+    .proof-strip { gap: 20px; padding: 20px 24px; }
+  }
+</style>
+</head>
+<body>
+
+<!-- ── NAV ── -->
+<nav>
+  <a href="/" class="nav-logo">My<span>OfficeDJ</span></a>
+  <ul class="nav-links">
+    <li><a href="#how-it-works">How it works</a></li>
+    <li><a href="#pricing">Pricing</a></li>
+    <li><a href="#for-teams">For teams</a></li>
+    <li><a href="https://app.myofficedj.com" class="nav-cta">Get started →</a></li>
+  </ul>
+</nav>
+
+<!-- ── HERO ── -->
+<section class="hero">
+  <div class="hero-bg"></div>
+  <div class="vinyl"></div>
+  <div class="vinyl vinyl-left"></div>
+
+  <div class="hero-badge">
+    <div class="hero-badge-dot"></div>
+    Now in beta · join the waitlist
+  </div>
+
+  <h1>The office jukebox<br>that <em>runs itself</em></h1>
+
+  <p class="hero-sub">
+    Your team earns credits by closing deals. They spend credits to control what plays. 
+    Everyone has a stake in the playlist.
+  </p>
+
+  <div class="hero-actions">
+    <a href="https://app.myofficedj.com" class="btn-primary">
+      Start your office → 
+    </a>
+    <a href="#how-it-works" class="btn-secondary">
+      See how it works
+    </a>
+  </div>
+</section>
+
+<!-- ── PROOF STRIP ── -->
+<div class="proof-strip fade-in">
+  <div class="proof-item">
+    <div class="proof-icon">🏢</div>
+    <span>Works for any sales floor</span>
+  </div>
+  <div class="proof-item">
+    <div class="proof-icon">🎵</div>
+    <span>Powered by Spotify</span>
+  </div>
+  <div class="proof-item">
+    <div class="proof-icon">⚡</div>
+    <span>Salesforce-native sync</span>
+  </div>
+  <div class="proof-item">
+    <div class="proof-icon">👥</div>
+    <span>Multi-tenant, every office isolated</span>
+  </div>
+  <div class="proof-item">
+    <div class="proof-icon">🚀</div>
+    <span>Live in under 10 minutes</span>
+  </div>
+</div>
+
+<!-- ── APP MOCKUP ── -->
+<div class="mockup-strip fade-in">
+  <div class="mockup-inner">
+    <div class="mockup-header">
+      <div>
+        <div class="mockup-logo">My<span>OfficeDJ</span></div>
+        <div class="mockup-sub">CODE EMTG01</div>
+      </div>
+      <div class="mockup-credits">⚡ 1,240 cr</div>
+    </div>
+    <div class="mockup-tabs">
+      <div class="mockup-tab active">🎵 Queue</div>
+      <div class="mockup-tab">➕ Request</div>
+      <div class="mockup-tab">🏆 Report Win</div>
+      <div class="mockup-tab">⚡ Credits</div>
+    </div>
+    <div class="mockup-body">
+      <div class="mockup-card">
+        <div class="mockup-pos">#1 · 3 votes</div>
+        <div class="mockup-song">
+          <div class="mockup-art mockup-art-1"></div>
+          <div>
+            <div class="mockup-song-title">God's Plan</div>
+            <div class="mockup-song-artist">Drake · Sarah</div>
+          </div>
+        </div>
+        <div class="mockup-vote-row">
+          <div class="mockup-vote mv-up">▲ Up -5cr</div>
+          <div class="mockup-vote mv-down">▼ Down -5cr</div>
+          <div class="mockup-vote mv-one">🚀 #1 -30cr</div>
+          <div class="mockup-vote mv-guard">🛡 Guard -15cr</div>
+        </div>
+      </div>
+      <div class="mockup-card">
+        <div class="mockup-pos">#2 · 1 vote</div>
+        <div class="mockup-song">
+          <div class="mockup-art mockup-art-2"></div>
+          <div>
+            <div class="mockup-song-title">Blinding Lights</div>
+            <div class="mockup-song-artist">The Weeknd · Marcus</div>
+          </div>
+        </div>
+        <div class="mockup-vote-row">
+          <div class="mockup-vote mv-up">▲ Up -5cr</div>
+          <div class="mockup-vote mv-down">▼ Down -5cr</div>
+          <div class="mockup-vote mv-one">🚀 #1 -30cr</div>
+          <div class="mockup-vote mv-guard">🛡 Guard -15cr</div>
+        </div>
+      </div>
+      <div class="mockup-card">
+        <div class="mockup-pos">#3 · 2 votes</div>
+        <div class="mockup-song">
+          <div class="mockup-art mockup-art-3"></div>
+          <div>
+            <div class="mockup-song-title">Levitating</div>
+            <div class="mockup-song-artist">Dua Lipa · Jamie</div>
+          </div>
+        </div>
+        <div class="mockup-vote-row">
+          <div class="mockup-vote mv-up">▲ Up -5cr</div>
+          <div class="mockup-vote mv-down">▼ Down -5cr</div>
+          <div class="mockup-vote mv-one">🚀 #1 -30cr</div>
+          <div class="mockup-vote mv-guard">🛡 Guard -15cr</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ── HOW IT WORKS ── -->
+<section class="section" id="how-it-works">
+  <div class="fade-in">
+    <div class="section-label">How it works</div>
+    <h2 class="section-title">Credits in. Songs out.</h2>
+    <p class="section-sub">A simple loop that keeps your team engaged all day.</p>
+  </div>
+
+  <div class="steps fade-in">
+    <div class="step">
+      <span class="step-num">01</span>
+      <h3>Hit a milestone</h3>
+      <p>Close a deal, pull credit, submit a loan. Your CRM fires a webhook and credits land in your account instantly — no manual input.</p>
+    </div>
+    <div class="step">
+      <span class="step-num">02</span>
+      <h3>Spend to request</h3>
+      <p>Search any song on Spotify and add it to the queue. Vote up songs you love, vote down songs you don't. Burn credits to jump to #1.</p>
+    </div>
+    <div class="step">
+      <span class="step-num">03</span>
+      <h3>Music plays</h3>
+      <p>The queue plays automatically through your office speakers. Admin controls Play, Pause, Skip. The team controls everything else.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ── FOR WHO ── -->
+<section class="section" id="for-teams" style="padding-top: 0;">
+  <div class="fade-in">
+    <div class="section-label">Who it's for</div>
+    <h2 class="section-title">Built for two worlds.</h2>
+    <p class="section-sub">Whether you run a sales floor or just want a smarter playlist.</p>
+  </div>
+
+  <div class="use-cases fade-in">
+    <div class="use-card office">
+      <div class="use-card-accent"></div>
+      <div class="use-tag">🏢 Office Plan</div>
+      <h3>Your sales floor,<br>gamified.</h3>
+      <p>Connect your CRM, set milestone values, and watch your team compete for the aux cord. Works with Salesforce, or manually through the admin panel.</p>
+      <ul class="use-features">
+        <li>Unlimited team members</li>
+        <li>Salesforce / CRM webhook sync</li>
+        <li>Custom credit rules per milestone</li>
+        <li>Admin panel with full controls</li>
+        <li>TV leaderboard mode</li>
+        <li>Office Friendly content filter</li>
+      </ul>
+    </div>
+
+    <div class="use-card room">
+      <div class="use-card-accent"></div>
+      <div class="use-tag">🎧 Personal Room</div>
+      <h3>Your playlist,<br>democratized.</h3>
+      <p>Create a room, share a link, let up to 4 friends vote on what plays. Perfect for road trips, pregames, study sessions, or anywhere you pass the aux.</p>
+      <ul class="use-features">
+        <li>Up to 4 members per room</li>
+        <li>Shareable join link</li>
+        <li>Real-time queue voting</li>
+        <li>No Spotify account needed to join</li>
+        <li>Plays through any speaker</li>
+        <li>Daily credit refresh</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- ── FEATURES ── -->
+<section class="section" style="padding-top: 0;">
+  <div class="fade-in">
+    <div class="section-label">Features</div>
+    <h2 class="section-title">Everything you need.</h2>
+  </div>
+
+  <div class="features-grid fade-in">
+    <div class="feature-card">
+      <div class="feature-icon fi-blue">🎵</div>
+      <h3>Full Spotify catalog</h3>
+      <p>Search and request any song from Spotify's 100M+ track library. No limits on what can be played.</p>
+    </div>
+    <div class="feature-card">
+      <div class="feature-icon fi-green">⚡</div>
+      <h3>Live credit system</h3>
+      <p>Credits are awarded instantly when milestones fire. Every vote costs credits. Real stakes, real fun.</p>
+    </div>
+    <div class="feature-card">
+      <div class="feature-icon fi-amber">🔗</div>
+      <h3>CRM sync</h3>
+      <p>Salesforce webhook integration out of the box. Works with any platform that can fire HTTP requests.</p>
+    </div>
+    <div class="feature-card">
+      <div class="feature-icon fi-blue">📺</div>
+      <h3>TV leaderboard</h3>
+      <p>Dedicated display mode showing who's winning the week. Put it on your office TV for max effect.</p>
+    </div>
+    <div class="feature-card">
+      <div class="feature-icon fi-green">🏢</div>
+      <h3>Office Friendly mode</h3>
+      <p>One toggle in the admin panel filters all explicit content from search results and the fallback playlist.</p>
+    </div>
+    <div class="feature-card">
+      <div class="feature-icon fi-amber">🔒</div>
+      <h3>Private by default</h3>
+      <p>Each office is fully isolated. Join codes control access. Regenerate your code instantly at any time.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ── PRICING ── -->
+<section class="section" id="pricing" style="padding-top: 0;">
+  <div class="fade-in">
+    <div class="section-label">Pricing</div>
+    <h2 class="section-title">Simple, honest pricing.</h2>
+    <p class="section-sub">Free to join. Pay only to create and run your own space.</p>
+  </div>
+
+  <div class="pricing-wrap fade-in">
+    <div class="pricing-grid">
+      <div class="price-card">
+        <div class="price-label">Member</div>
+        <div class="price-amount">$0</div>
+        <div class="price-per">forever free</div>
+        <div class="price-desc">Join any office or room someone shares with you. Request songs, vote, and compete on the leaderboard.</div>
+        <ul class="price-features">
+          <li>Join with a code or link</li>
+          <li>Request songs from Spotify</li>
+          <li>Vote on the queue</li>
+          <li>Earn credits from milestones</li>
+          <li>View leaderboard</li>
+        </ul>
+        <a href="https://app.myofficedj.com" class="price-btn price-btn-outline">Join a room →</a>
+      </div>
+
+      <div class="price-card featured">
+        <div class="price-label">Office</div>
+        <div class="price-amount">$29</div>
+        <div class="price-per">per month · billed monthly</div>
+        <div class="price-desc">Everything you need to run a sales floor jukebox. Unlimited team members, full CRM integration.</div>
+        <ul class="price-features">
+          <li>Unlimited team members</li>
+          <li>Salesforce webhook sync</li>
+          <li>Custom credit rules</li>
+          <li>Admin panel + TV mode</li>
+          <li>Office Friendly filter</li>
+          <li>Priority support</li>
+        </ul>
+        <a href="https://app.myofficedj.com" class="price-btn price-btn-dark">Start your office →</a>
+      </div>
+
+      <div class="price-card">
+        <div class="price-label">Personal Room</div>
+        <div class="price-amount">$4</div>
+        <div class="price-per">per month · cancel anytime</div>
+        <div class="price-desc">Create your own listening room, share with up to 4 friends. Perfect for road trips and group sessions.</div>
+        <ul class="price-features">
+          <li>Up to 4 members</li>
+          <li>Shareable room link</li>
+          <li>Real-time voting</li>
+          <li>Daily credit refresh</li>
+          <li>Any Spotify-connected speaker</li>
+        </ul>
+        <a href="https://app.myofficedj.com" class="price-btn price-btn-outline">Create a room →</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── CTA ── -->
+<div class="cta-section fade-in">
+  <h2>Ready to turn your<br><em>office into a concert?</em></h2>
+  <p>Set up in 10 minutes. Your team earns their first credits today.</p>
+  <div class="cta-actions">
+    <a href="https://app.myofficedj.com" class="btn-white">Get started free →</a>
+    <a href="mailto:hello@myofficedj.com" class="btn-ghost-white">Talk to us</a>
+  </div>
+</div>
+
+<!-- ── FOOTER ── -->
+<footer>
+  <div class="footer-logo">My<span>OfficeDJ</span></div>
+  <ul class="footer-links">
+    <li><a href="#how-it-works">How it works</a></li>
+    <li><a href="#pricing">Pricing</a></li>
+    <li><a href="mailto:hello@myofficedj.com">Contact</a></li>
+    <li><a href="#">Privacy</a></li>
+    <li><a href="#">Terms</a></li>
+  </ul>
+  <div class="footer-copy">© 2026 MyOfficeDJ. All rights reserved.</div>
+</footer>
+
+<script>
+  // Scroll-triggered fade-ins
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(el => {
+      if (el.isIntersecting) {
+        el.target.classList.add('visible');
+        observer.unobserve(el.target);
+      }
+    });
+  }, { threshold: 0.1 });
+
+  document.querySelectorAll('.fade-in').forEach(el => observer.observe(el));
+</script>
+
+</body>
+</html>
