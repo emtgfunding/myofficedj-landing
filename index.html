@@ -1229,8 +1229,8 @@
 
       <div class="price-card featured">
         <div class="price-label">Office</div>
-        <div class="price-amount">$29</div>
-        <div class="price-per">per month · billed monthly</div>
+        <div class="price-amount" id="office-price">$49</div>
+        <div class="price-per" id="office-per">per month · billed monthly</div>
         <div class="price-desc">Everything your office needs. Unlimited team members, webhook integrations, and full admin controls.</div>
         <ul class="price-features">
           <li>Unlimited team members</li>
@@ -1245,8 +1245,8 @@
 
       <div class="price-card">
         <div class="price-label">Personal Room</div>
-        <div class="price-amount">$4</div>
-        <div class="price-per">per month · cancel anytime</div>
+        <div class="price-amount" id="room-price">$4.99</div>
+        <div class="price-per" id="room-per">per month · cancel anytime</div>
         <div class="price-desc">Create your own listening room, share with up to 4 friends. Perfect for road trips and group sessions.</div>
         <ul class="price-features">
           <li>Up to 4 members</li>
@@ -1296,6 +1296,70 @@
   }, { threshold: 0.1 });
 
   document.querySelectorAll('.fade-in').forEach(el => observer.observe(el));
+
+  // Billing toggle
+  let billingPeriod = 'monthly';
+
+  function toggleBilling() {
+    setBilling(billingPeriod === 'monthly' ? 'annual' : 'monthly');
+  }
+
+  function setBilling(period) {
+    billingPeriod = period;
+    const knob = document.getElementById('billing-knob');
+    const monthly = document.getElementById('toggle-monthly');
+    const annual = document.getElementById('toggle-annual');
+    const officePrice = document.getElementById('office-price');
+    const officePer = document.getElementById('office-per');
+    const roomPrice = document.getElementById('room-price');
+    const roomPer = document.getElementById('room-per');
+
+    if (period === 'annual') {
+      knob.style.transform = 'translateX(22px)';
+      monthly.style.color = 'var(--ink3)'; monthly.style.fontWeight = '600';
+      annual.style.color = 'var(--ink)'; annual.style.fontWeight = '700';
+      officePrice.textContent = '$399';
+      officePer.textContent = 'per year · save $189';
+      roomPrice.textContent = '$39';
+      roomPer.textContent = 'per year · save $21';
+    } else {
+      knob.style.transform = 'translateX(0)';
+      monthly.style.color = 'var(--ink)'; monthly.style.fontWeight = '700';
+      annual.style.color = 'var(--ink3)'; annual.style.fontWeight = '600';
+      officePrice.textContent = '$49';
+      officePer.textContent = 'per month · billed monthly';
+      roomPrice.textContent = '$4.99';
+      roomPer.textContent = 'per month · cancel anytime';
+    }
+  }
+
+  // Stripe Checkout
+  async function startCheckout(plan) {
+    const email = prompt('Enter your work email to get started:');
+    if (!email || !email.includes('@')) return;
+    
+    const officeName = plan === 'office' 
+      ? prompt('What is your office/company name?') 
+      : prompt('What would you like to name your room?');
+    if (!officeName) return;
+
+    const btn = document.querySelector(`[data-plan="${plan}"]`);
+    if (btn) { btn.textContent = 'Loading...'; btn.disabled = true; }
+
+    try {
+      const res = await fetch('https://emortgage-dj-production.up.railway.app/stripe/checkout', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ plan, email, office_name: officeName, billing: billingPeriod })
+      });
+      const { url, error } = await res.json();
+      if (error) throw new Error(error);
+      window.location.href = url;
+    } catch (err) {
+      alert('Something went wrong. Please try again.');
+      if (btn) { btn.textContent = plan === 'office' ? 'Start your office →' : 'Create a room →'; btn.disabled = false; }
+    }
+  }
 </script>
 
 </body>
