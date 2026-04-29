@@ -4,6 +4,15 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>MyOfficeDJ — The Office Jukebox That Runs Itself</title>
+<meta name="description" content="Employees earn credits by hitting milestones. They spend credits to control what plays. Everyone gets a voice in the music — without anyone hogging the aux cord.">
+<meta property="og:title" content="MyOfficeDJ — The Office Jukebox That Runs Itself">
+<meta property="og:description" content="Employees earn credits by hitting milestones and spend them to control what plays. A jukebox the whole office can run together.">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://myofficedj.com">
+<meta property="og:site_name" content="MyOfficeDJ">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="MyOfficeDJ — The Office Jukebox That Runs Itself">
+<meta name="twitter:description" content="Employees earn credits by hitting milestones and spend them to control what plays. A jukebox the whole office can run together.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Cabinet+Grotesk:wght@400;500;700;800&display=swap" rel="stylesheet">
 <style>
@@ -719,6 +728,61 @@
     line-height: 1.6;
   }
 
+  /* ── FAQ ── */
+  .faq-list {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    max-width: 760px;
+  }
+
+  .faq-item {
+    background: var(--white);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    overflow: hidden;
+    transition: border-color 0.2s;
+  }
+
+  .faq-item[open] { border-color: var(--blue); }
+
+  .faq-item summary {
+    list-style: none;
+    cursor: pointer;
+    padding: 22px 28px;
+    font-size: 16px;
+    font-weight: 700;
+    color: var(--ink);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+  }
+
+  .faq-item summary::-webkit-details-marker { display: none; }
+
+  .faq-item summary::after {
+    content: '+';
+    font-family: 'Instrument Serif', serif;
+    font-size: 28px;
+    line-height: 1;
+    color: var(--ink3);
+    transition: transform 0.25s, color 0.2s;
+    flex-shrink: 0;
+  }
+
+  .faq-item[open] summary::after {
+    transform: rotate(45deg);
+    color: var(--blue);
+  }
+
+  .faq-item p {
+    padding: 0 28px 24px;
+    font-size: 15px;
+    color: var(--ink2);
+    line-height: 1.65;
+  }
+
   /* ── CTA SECTION ── */
   .cta-section {
     margin: 0 40px 100px;
@@ -1022,6 +1086,7 @@
     <li><a href="#how-it-works">How it works</a></li>
     <li><a href="#pricing">Pricing</a></li>
     <li><a href="#for-teams">For teams</a></li>
+    <li><a href="#faq">FAQ</a></li>
     <li><a href="https://app.myofficedj.com" class="nav-cta">Get started →</a></li>
   </ul>
 </nav>
@@ -1321,6 +1386,51 @@
         <a href="https://app.myofficedj.com" class="price-btn price-btn-outline">Create a room →</a>
       </div>
     </div>
+  </div>
+</section>
+
+<!-- ── FAQ ── -->
+<section class="section" id="faq" style="padding-top: 0;">
+  <div class="fade-in">
+    <div class="section-label">FAQ</div>
+    <h2 class="section-title">Questions, answered.</h2>
+  </div>
+
+  <div class="faq-list fade-in">
+    <details class="faq-item">
+      <summary>How do credits actually work?</summary>
+      <p>Members earn credits when milestones fire — closed deals, completed tasks, manager shoutouts, anything you wire up. They spend credits to request songs, vote up or down, jump a track to #1, or guard a song from being voted off. You decide what each milestone is worth.</p>
+    </details>
+
+    <details class="faq-item">
+      <summary>Do employees need their own music account?</summary>
+      <p>No. Members join with a code or share link — no music account, no signup form. Only the office admin needs to connect a music source once during setup.</p>
+    </details>
+
+    <details class="faq-item">
+      <summary>Which platforms can we connect for credit rules?</summary>
+      <p>Anything that can fire a webhook. Salesforce, HubSpot, Monday, Jira, Zapier, Make, or your own backend. Point it at our endpoint, decide what triggers credits, and you're done. Admins can also award credits manually from the panel.</p>
+    </details>
+
+    <details class="faq-item">
+      <summary>Can we filter explicit content?</summary>
+      <p>Yes. The Office Friendly toggle in the admin panel filters explicit tracks from search results and the fallback playlist. One switch, applies to everything.</p>
+    </details>
+
+    <details class="faq-item">
+      <summary>Is each office private?</summary>
+      <p>Yes. Every office is fully isolated — separate queue, separate leaderboard, separate credit ledger. Access is gated by a join code that you can regenerate at any time.</p>
+    </details>
+
+    <details class="faq-item">
+      <summary>Can I cancel or switch billing periods?</summary>
+      <p>Cancel anytime from your admin panel — your office stays active through the end of the current billing period. You can switch between monthly and annual on renewal.</p>
+    </details>
+
+    <details class="faq-item">
+      <summary>How long does setup take?</summary>
+      <p>About 10 minutes. Connect a music source, set your credit rules, share the join code with the team, and you're live.</p>
+    </details>
   </div>
 </section>
 
