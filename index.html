@@ -638,6 +638,7 @@
 
   .price-btn {
     display: block;
+    width: 100%;
     text-align: center;
     padding: 12px 24px;
     border-radius: 100px;
@@ -645,7 +646,11 @@
     font-weight: 700;
     text-decoration: none;
     transition: all 0.2s;
+    cursor: pointer;
+    font-family: inherit;
   }
+
+  .price-btn:disabled { opacity: 0.6; cursor: not-allowed; }
 
   .price-btn-outline {
     border: 2px solid var(--border);
@@ -1368,7 +1373,7 @@
           <li>Office Friendly filter</li>
           <li>Priority support</li>
         </ul>
-        <a href="https://app.myofficedj.com" class="price-btn price-btn-dark">Start your office →</a>
+        <button type="button" data-plan="office" class="price-btn price-btn-dark" onclick="startCheckout('office')">Start your office →</button>
       </div>
 
       <div class="price-card">
@@ -1383,7 +1388,7 @@
           <li>Daily credit refresh</li>
           <li>Any connected speaker</li>
         </ul>
-        <a href="https://app.myofficedj.com" class="price-btn price-btn-outline">Create a room →</a>
+        <button type="button" data-plan="room" class="price-btn price-btn-outline" onclick="startCheckout('room')">Create a room →</button>
       </div>
     </div>
   </div>
