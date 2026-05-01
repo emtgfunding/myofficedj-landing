@@ -3,17 +3,24 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>MyOfficeDJ — The Office Jukebox That Runs Itself</title>
-<meta name="description" content="Employees earn credits by hitting milestones. They spend credits to control what plays. Everyone gets a voice in the music — without anyone hogging the aux cord.">
-<meta property="og:title" content="MyOfficeDJ — The Office Jukebox That Runs Itself">
-<meta property="og:description" content="Employees earn credits by hitting milestones and spend them to control what plays. A jukebox the whole office can run together.">
+<title>MyOfficeDJ — Your office. Your soundtrack.</title>
+<meta name="description" content="The office jukebox that runs itself. Earn credits from your CRM, spend them to control the queue. Live in under 10 minutes.">
+<link rel="icon" type="image/svg+xml" href="/favicon.svg">
+<meta name="theme-color" content="#1a56db">
 <meta property="og:type" content="website">
 <meta property="og:url" content="https://myofficedj.com">
 <meta property="og:site_name" content="MyOfficeDJ">
-<meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="MyOfficeDJ — The Office Jukebox That Runs Itself">
-<meta name="twitter:description" content="Employees earn credits by hitting milestones and spend them to control what plays. A jukebox the whole office can run together.">
+<meta property="og:title" content="MyOfficeDJ — Your office. Your soundtrack.">
+<meta property="og:description" content="The office jukebox that runs itself. Earn credits from your CRM, spend them to control the queue.">
+<meta property="og:image" content="https://myofficedj.com/brand/social-card.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="MyOfficeDJ — Your office. Your soundtrack.">
+<meta name="twitter:description" content="The office jukebox that runs itself.">
+<meta name="twitter:image" content="https://myofficedj.com/brand/social-card.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Cabinet+Grotesk:wght@400;500;700;800&display=swap" rel="stylesheet">
 <style>
   :root {
@@ -72,16 +79,30 @@
   }
 
   .nav-logo {
-    font-family: 'Instrument Serif', serif;
-    font-size: 22px;
-    color: var(--ink);
     text-decoration: none;
-    display: flex;
+    display: inline-flex;
     align-items: center;
-    gap: 8px;
+    gap: 10px;
+    color: var(--ink);
   }
 
-  .nav-logo span { color: var(--blue); }
+  .nav-logo img { height: 28px; width: auto; display: block; }
+  .nav-logo .nl-mark { height: 30px; width: 30px; }
+  .nav-logo .nl-word {
+    font-family: 'Cabinet Grotesk', sans-serif;
+    font-weight: 800;
+    font-size: 20px;
+    letter-spacing: -0.5px;
+    color: var(--ink);
+    line-height: 1;
+  }
+  .nav-logo .nl-word em {
+    font-family: 'Instrument Serif', serif;
+    font-weight: 400;
+    font-style: italic;
+    color: var(--blue);
+    letter-spacing: -0.3px;
+  }
 
   .nav-links {
     display: flex;
@@ -133,49 +154,28 @@
     pointer-events: none;
   }
 
-  /* Vinyl record decorative element */
+  /* Vinyl record decorative element — uses the brand mark SVG */
   .vinyl {
     position: absolute;
-    right: -80px;
+    right: -120px;
     top: 50%;
     transform: translateY(-50%);
-    width: 420px;
-    height: 420px;
-    border-radius: 50%;
-    background: conic-gradient(
-      #1a1a1a 0deg, #2a2a2a 10deg, #1a1a1a 20deg, #2a2a2a 30deg,
-      #1a1a1a 40deg, #2a2a2a 50deg, #1a1a1a 60deg, #2a2a2a 70deg,
-      #1a1a1a 80deg, #2a2a2a 90deg, #1a1a1a 100deg, #2a2a2a 110deg,
-      #1a1a1a 120deg, #2a2a2a 130deg, #1a1a1a 140deg, #2a2a2a 150deg,
-      #1a1a1a 160deg, #2a2a2a 170deg, #1a1a1a 180deg, #2a2a2a 190deg,
-      #1a1a1a 200deg, #2a2a2a 210deg, #1a1a1a 220deg, #2a2a2a 230deg,
-      #1a1a1a 240deg, #2a2a2a 250deg, #1a1a1a 260deg, #2a2a2a 270deg,
-      #1a1a1a 280deg, #2a2a2a 290deg, #1a1a1a 300deg, #2a2a2a 310deg,
-      #1a1a1a 320deg, #2a2a2a 330deg, #1a1a1a 340deg, #2a2a2a 350deg,
-      #1a1a1a 360deg
-    );
-    opacity: 0.07;
-    animation: spin 20s linear infinite;
-  }
-
-  .vinyl::after {
-    content: '';
-    position: absolute;
-    inset: 30%;
-    border-radius: 50%;
-    background: var(--off-white);
+    width: 460px;
+    height: 460px;
+    background: url("/brand/logo-mark.svg") center/contain no-repeat;
+    opacity: 0.18;
+    animation: spin 24s linear infinite;
+    pointer-events: none;
   }
 
   .vinyl-left {
     right: auto;
-    left: -100px;
-    width: 300px;
-    height: 300px;
-    animation-direction: reverse;
-    animation-duration: 15s;
-    top: 20%;
+    left: -140px;
+    width: 320px;
+    height: 320px;
+    top: 14%;
     transform: none;
-    opacity: 0.05;
+    opacity: 0.10;
   }
 
   @keyframes spin {
@@ -183,7 +183,7 @@
     to { transform: translateY(-50%) rotate(360deg); }
   }
 
-  .vinyl-left { animation: spinLeft 15s linear infinite; }
+  .vinyl-left { animation: spinLeft 18s linear infinite; }
   @keyframes spinLeft {
     from { transform: rotate(0deg); }
     to { transform: rotate(-360deg); }
@@ -220,18 +220,42 @@
   }
 
   h1 {
-    font-family: 'Instrument Serif', serif;
-    font-size: clamp(52px, 8vw, 96px);
-    line-height: 1.0;
+    font-family: 'Cabinet Grotesk', sans-serif;
+    font-weight: 800;
+    font-size: clamp(56px, 9vw, 112px);
+    line-height: 0.98;
+    letter-spacing: -2.5px;
     color: var(--ink);
     margin-bottom: 24px;
-    max-width: 800px;
+    max-width: 880px;
     animation: fadeUp 0.6s 0.1s both;
   }
 
   h1 em {
+    font-family: 'Instrument Serif', serif;
+    font-weight: 400;
     font-style: italic;
     color: var(--blue);
+    letter-spacing: -1.5px;
+  }
+
+  .eyebrow {
+    display: inline-flex;
+    align-items: center;
+    gap: 14px;
+    margin-bottom: 22px;
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--ink2);
+    animation: fadeUp 0.6s both;
+  }
+  .eyebrow::before {
+    content: '';
+    width: 36px;
+    height: 1px;
+    background: var(--ink);
   }
 
   .hero-sub {
@@ -344,12 +368,21 @@
   }
 
   .section-title {
-    font-family: 'Instrument Serif', serif;
-    font-size: clamp(36px, 5vw, 56px);
-    line-height: 1.1;
+    font-family: 'Cabinet Grotesk', sans-serif;
+    font-weight: 800;
+    letter-spacing: -1.5px;
+    font-size: clamp(36px, 5vw, 60px);
+    line-height: 1.05;
     color: var(--ink);
     margin-bottom: 16px;
-    max-width: 600px;
+    max-width: 640px;
+  }
+  .section-title em {
+    font-family: 'Instrument Serif', serif;
+    font-weight: 400;
+    font-style: italic;
+    color: var(--blue);
+    letter-spacing: -0.8px;
   }
 
   .section-sub {
@@ -381,8 +414,10 @@
 
   .step-num {
     font-family: 'Instrument Serif', serif;
+    font-style: italic;
     font-size: 64px;
-    color: var(--blue-light);
+    color: var(--blue);
+    opacity: 0.85;
     line-height: 1;
     margin-bottom: 16px;
     display: block;
@@ -507,11 +542,19 @@
   .use-card.room .use-tag { background: var(--green-light); color: var(--green); }
 
   .use-card h3 {
-    font-family: 'Instrument Serif', serif;
-    font-size: 28px;
+    font-family: 'Cabinet Grotesk', sans-serif;
+    font-weight: 800;
+    letter-spacing: -0.7px;
+    font-size: 26px;
     color: var(--ink);
     margin-bottom: 12px;
-    line-height: 1.2;
+    line-height: 1.15;
+  }
+  .use-card h3 em {
+    font-family: 'Instrument Serif', serif;
+    font-weight: 400;
+    font-style: italic;
+    color: var(--blue);
   }
 
   .use-card p {
@@ -639,8 +682,10 @@
   .price-card.featured .price-label { color: rgba(255,255,255,0.5); }
 
   .price-amount {
-    font-family: 'Instrument Serif', serif;
-    font-size: 52px;
+    font-family: 'Cabinet Grotesk', sans-serif;
+    font-weight: 800;
+    letter-spacing: -1.5px;
+    font-size: 56px;
     line-height: 1;
     color: var(--ink);
     margin-bottom: 4px;
@@ -866,15 +911,23 @@
   }
 
   .cta-section h2 {
-    font-family: 'Instrument Serif', serif;
-    font-size: clamp(36px, 5vw, 60px);
+    font-family: 'Cabinet Grotesk', sans-serif;
+    font-weight: 800;
+    letter-spacing: -1.8px;
+    font-size: clamp(38px, 5.5vw, 64px);
     color: var(--white);
     margin-bottom: 16px;
     position: relative;
-    line-height: 1.1;
+    line-height: 1.05;
   }
 
-  .cta-section h2 em { color: #7dd3fc; font-style: italic; }
+  .cta-section h2 em {
+    font-family: 'Instrument Serif', serif;
+    font-weight: 400;
+    color: #93b4ff;
+    font-style: italic;
+    letter-spacing: -1px;
+  }
 
   .cta-section p {
     font-size: 17px;
@@ -948,12 +1001,28 @@
   }
 
   .footer-logo {
-    font-family: 'Instrument Serif', serif;
-    font-size: 18px;
+    display: inline-flex;
+    align-items: center;
+    gap: 9px;
     color: var(--ink);
   }
 
-  .footer-logo span { color: var(--blue); }
+  .footer-logo img { height: 24px; width: 24px; display: block; }
+
+  .footer-logo .fl-word {
+    font-family: 'Cabinet Grotesk', sans-serif;
+    font-weight: 800;
+    font-size: 17px;
+    letter-spacing: -0.4px;
+    line-height: 1;
+  }
+
+  .footer-logo .fl-word em {
+    font-family: 'Instrument Serif', serif;
+    font-weight: 400;
+    font-style: italic;
+    color: var(--blue);
+  }
 
   .footer-links {
     display: flex;
@@ -1026,11 +1095,19 @@
   .modal-close:hover { background: var(--off-white); color: var(--ink); }
 
   .modal-title {
-    font-family: 'Instrument Serif', serif;
+    font-family: 'Cabinet Grotesk', sans-serif;
+    font-weight: 800;
+    letter-spacing: -0.8px;
     font-size: 30px;
     color: var(--ink);
     margin-bottom: 6px;
     line-height: 1.1;
+  }
+  .modal-title em {
+    font-family: 'Instrument Serif', serif;
+    font-weight: 400;
+    font-style: italic;
+    color: var(--blue);
   }
 
   .modal-desc {
@@ -1143,12 +1220,25 @@
   }
 
   .mockup-logo {
-    font-family: 'Instrument Serif', serif;
-    font-size: 16px;
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
     color: var(--ink);
   }
-
-  .mockup-logo span { color: var(--blue); }
+  .mockup-logo img { height: 18px; width: 18px; display: block; }
+  .mockup-logo .ml-word {
+    font-family: 'Cabinet Grotesk', sans-serif;
+    font-weight: 800;
+    font-size: 14px;
+    letter-spacing: -0.3px;
+    line-height: 1;
+  }
+  .mockup-logo .ml-word em {
+    font-family: 'Instrument Serif', serif;
+    font-weight: 400;
+    font-style: italic;
+    color: var(--blue);
+  }
 
   .mockup-sub { font-size: 10px; color: var(--ink3); }
 
@@ -1271,7 +1361,10 @@
 
 <!-- ── NAV ── -->
 <nav>
-  <a href="/" class="nav-logo">My<span>OfficeDJ</span></a>
+  <a href="/" class="nav-logo" aria-label="MyOfficeDJ home">
+    <img class="nl-mark" src="/brand/logo-mark.svg" alt=""/>
+    <span class="nl-word">My<em>OfficeDJ</em></span>
+  </a>
   <ul class="nav-links">
     <li><a href="#how-it-works">How it works</a></li>
     <li><a href="#pricing">Pricing</a></li>
@@ -1286,6 +1379,8 @@
   <div class="hero-bg"></div>
   <div class="vinyl"></div>
   <div class="vinyl vinyl-left"></div>
+
+  <div class="eyebrow">SaaS · Office Jukebox · Est. 2025</div>
 
   <div class="hero-badge">
     <div class="hero-badge-dot"></div>
@@ -1338,7 +1433,10 @@
   <div class="mockup-inner">
     <div class="mockup-header">
       <div>
-        <div class="mockup-logo">My<span>OfficeDJ</span></div>
+        <div class="mockup-logo">
+          <img src="/brand/logo-mark.svg" alt=""/>
+          <span class="ml-word">My<em>OfficeDJ</em></span>
+        </div>
         <div class="mockup-sub">CODE EMTG01</div>
       </div>
       <div class="mockup-credits">⚡ 1,240 cr</div>
@@ -1700,7 +1798,10 @@
 
 <!-- ── FOOTER ── -->
 <footer>
-  <div class="footer-logo">My<span>OfficeDJ</span></div>
+  <div class="footer-logo">
+    <img src="/brand/logo-mark.svg" alt=""/>
+    <span class="fl-word">My<em>OfficeDJ</em></span>
+  </div>
   <ul class="footer-links">
     <li><a href="#how-it-works">How it works</a></li>
     <li><a href="#pricing">Pricing</a></li>
