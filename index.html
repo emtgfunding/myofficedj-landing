@@ -4,1372 +4,346 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>MyOfficeDJ — Your office. Your soundtrack.</title>
-<meta name="description" content="The office jukebox that runs itself. Earn credits from your CRM, spend them to control the queue. Live in under 10 minutes.">
+<meta name="description" content="Music your team actually controls. Earn credits from your CRM, spend them on the queue. Live in under ten minutes.">
 <link rel="icon" type="image/svg+xml" href="/favicon.svg">
-<meta name="theme-color" content="#1a56db">
+<meta name="theme-color" content="#ffffff">
 <meta property="og:type" content="website">
 <meta property="og:url" content="https://myofficedj.com">
 <meta property="og:site_name" content="MyOfficeDJ">
 <meta property="og:title" content="MyOfficeDJ — Your office. Your soundtrack.">
-<meta property="og:description" content="The office jukebox that runs itself. Earn credits from your CRM, spend them to control the queue.">
+<meta property="og:description" content="Music your team actually controls. Earn credits from your CRM, spend them on the queue.">
 <meta property="og:image" content="https://myofficedj.com/brand/social-card.png">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="MyOfficeDJ — Your office. Your soundtrack.">
-<meta name="twitter:description" content="The office jukebox that runs itself.">
+<meta name="twitter:description" content="Music your team actually controls.">
 <meta name="twitter:image" content="https://myofficedj.com/brand/social-card.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Geist:wght@300;400;500;600;700&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Inter:wght@400;500;600&family=Cabinet+Grotesk:wght@500;700;800&display=swap" rel="stylesheet">
 <style>
   :root {
-    --white: #ffffff;
-    --off-white: #ffffff;
-    --ink: #0a0a0a;
-    --ink2: #3a3a3a;
-    --ink3: #737373;
-    --blue: #1e40af;
-    --blue-light: #f5f6fb;
-    --green: #0d7a55;
-    --green-light: #e6f4ef;
-    --amber: #c47c0e;
-    --amber-light: #fdf3e0;
-    --border: #e4e2dc;
-    --radius: 16px;
+    --bg:        #ffffff;
+    --bg-dark:   #0a0a0a;
+    --ink:       #0a0a0a;
+    --ink-soft:  #3a3a38;
+    --ink-mute:  #6f6e6a;
+    --paper:     #fafaf8;
+    --accent:    #1a56db;
+    --accent-hi: #93b4ff;
+    --hair:      rgba(0,0,0,0.10);
+    --hair-soft: rgba(0,0,0,0.06);
+    --hair-dark: rgba(255,255,255,0.12);
+
+    --r-btn: 8px;
+    --r-input: 12px;
   }
 
   * { box-sizing: border-box; margin: 0; padding: 0; }
-  
   html { scroll-behavior: smooth; }
 
   body {
-    font-family: 'Geist', -apple-system, BlinkMacSystemFont, 'Inter', sans-serif;
-    background: var(--off-white);
+    font-family: 'Inter', system-ui, sans-serif;
+    background: var(--bg);
     color: var(--ink);
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
     overflow-x: hidden;
   }
 
-  /* ── NOISE TEXTURE ── */
-  body::before {
-    content: '';
-    position: fixed;
-    inset: 0;
-    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 512 512' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.035'/%3E%3C/svg%3E");
-    pointer-events: none;
-    z-index: 9999;
-    opacity: 0.5;
-  }
-
-  /* ── NAV ── */
-  nav {
-    position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
-    z-index: 100;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 0 40px;
-    height: 64px;
-    background: rgba(247,246,243,0.85);
-    backdrop-filter: blur(16px);
-    border-bottom: 1px solid var(--border);
-  }
-
-  .nav-logo {
-    text-decoration: none;
-    display: inline-flex;
-    align-items: center;
-    gap: 10px;
-    color: var(--ink);
-  }
-
-  .nav-logo img { height: 28px; width: auto; display: block; }
-  .nav-logo .nl-mark { height: 30px; width: 30px; }
-  .nav-logo .nl-word {
-    font-family: 'Geist', -apple-system, BlinkMacSystemFont, 'Inter', sans-serif;
-    font-weight: 800;
-    font-size: 20px;
-    letter-spacing: -0.5px;
-    color: var(--ink);
-    line-height: 1;
-  }
-  .nav-logo .nl-word em {
-    font-family: 'Instrument Serif', serif;
-    font-weight: 400;
-    font-style: italic;
-    color: var(--blue);
-    letter-spacing: -0.3px;
-  }
-
-  .nav-links {
-    display: flex;
-    align-items: center;
-    gap: 32px;
-    list-style: none;
-  }
-
-  .nav-links a {
-    color: var(--ink2);
-    text-decoration: none;
-    font-size: 14px;
-    font-weight: 500;
-    transition: color 0.2s;
-  }
-
-  .nav-links a:hover { color: var(--blue); }
-
-  .nav-cta {
-    background: var(--ink);
-    color: var(--white) !important;
-    padding: 8px 20px;
-    border-radius: 8px;
-    font-weight: 700 !important;
-    transition: background 0.2s !important;
-  }
-
-  .nav-cta:hover { background: var(--blue) !important; color: var(--white) !important; }
-
-  /* ── HERO ── */
-  .hero {
-    min-height: 100vh;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    padding: 100px 40px 80px;
-    text-align: center;
-    position: relative;
-    overflow: hidden;
-  }
-
-  .hero-bg {
-    position: absolute;
-    inset: 0;
-    background: transparent;
-    pointer-events: none;
-  }
-
-  /* Vinyl record decorative element — uses the brand mark SVG */
-  .vinyl {
-    position: absolute;
-    right: -120px;
-    top: 50%;
-    transform: translateY(-50%);
-    width: 460px;
-    height: 460px;
-    background: url("/brand/logo-mark.svg") center/contain no-repeat;
-    opacity: 0.10;
-    animation: spin 60s linear infinite;
-    pointer-events: none;
-  }
-
-  .vinyl-left {
-    right: auto;
-    left: -140px;
-    width: 320px;
-    height: 320px;
-    top: 14%;
-    transform: none;
-    opacity: 0.10;
-  }
-
-  @keyframes spin {
-    from { transform: translateY(-50%) rotate(0deg); }
-    to { transform: translateY(-50%) rotate(360deg); }
-  }
-
-  .vinyl-left { animation: spinLeft 18s linear infinite; }
-  @keyframes spinLeft {
-    from { transform: rotate(0deg); }
-    to { transform: rotate(-360deg); }
-  }
-
-  .hero-badge {
-    display: inline-flex;
-    align-items: center;
-    gap: 8px;
-    background: var(--blue-light);
-    color: var(--blue);
-    font-size: 12px;
+  h1, h2 {
+    font-family: 'Cabinet Grotesk', 'Inter', sans-serif;
     font-weight: 700;
-    letter-spacing: 1px;
-    text-transform: uppercase;
-    padding: 6px 16px;
-    border-radius: 8px;
-    border: 1px solid rgba(26,86,219,0.2);
-    margin-bottom: 28px;
-    animation: fadeUp 0.6s both;
-  }
-
-  .hero-badge-dot {
-    width: 6px;
-    height: 6px;
-    border-radius: 50%;
-    background: var(--blue);
-    animation: pulse 2s infinite;
-  }
-
-  @keyframes pulse {
-    0%, 100% { opacity: 1; transform: scale(1); }
-    50% { opacity: 0.5; transform: scale(0.8); }
-  }
-
-  h1 {
-    font-family: 'Geist', -apple-system, BlinkMacSystemFont, 'Inter', sans-serif;
-    font-weight: 700;
-    font-size: clamp(56px, 8vw, 128px);
-    line-height: 0.92;
     letter-spacing: -0.03em;
     color: var(--ink);
-    margin-bottom: 24px;
-    max-width: 980px;
   }
-  /* Word-by-word reveal — JS splits H1 text into spans, each gets a stagger */
-  h1 .word {
+  h1 { font-size: clamp(56px, 8vw, 128px); line-height: 0.95; }
+  h2 { font-size: clamp(40px, 5vw, 72px); line-height: 1.0; }
+
+  .serif {
+    font-family: 'Instrument Serif', serif;
+    font-weight: 400;
+    font-style: italic;
+    letter-spacing: -0.02em;
+  }
+  .accent { color: var(--accent); }
+
+  /* NAV */
+  nav {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 0 32px; height: 64px;
+    background: rgba(255,255,255,0.85);
+    backdrop-filter: blur(14px);
+    border-bottom: 1px solid var(--hair);
+  }
+  .nav-logo { text-decoration: none; display: inline-flex; align-items: center; gap: 10px; color: var(--ink); }
+  .nav-logo .nl-mark { height: 26px; width: 26px; display: block; }
+  .nav-logo .nl-word { font-family: 'Cabinet Grotesk', sans-serif; font-weight: 800; font-size: 18px; letter-spacing: -0.02em; line-height: 1; }
+  .nav-logo .nl-word em { font-family: 'Instrument Serif', serif; font-weight: 400; font-style: italic; color: var(--accent); }
+
+  .nav-links { display: flex; align-items: center; gap: 28px; list-style: none; }
+  .nav-links a { color: var(--ink-soft); text-decoration: none; font-size: 14px; font-weight: 500; position: relative; padding: 4px 0; }
+  .nav-links a:not(.nav-cta)::after { content: ''; position: absolute; left: 0; bottom: 0; height: 1px; width: 0%; background: var(--accent); transition: width 0.25s ease-out; }
+  .nav-links a:not(.nav-cta):hover { color: var(--ink); }
+  .nav-links a:not(.nav-cta):hover::after { width: 100%; }
+
+  .nav-cta { background: var(--accent) !important; color: #ffffff !important; padding: 9px 18px !important; border-radius: var(--r-btn); font-weight: 600 !important; font-size: 13px !important; transition: transform 0.15s ease-out, background 0.15s; }
+  .nav-cta:hover { background: #103fa8 !important; transform: translateY(-1px); }
+
+  /* HERO */
+  .hero {
+    position: relative; min-height: 100vh;
+    padding: 160px 32px 100px;
+    display: grid; grid-template-columns: 1fr; align-content: center; gap: 36px;
+    max-width: 1280px; margin: 0 auto;
+  }
+  .hero-eyebrow { display: inline-flex; align-items: center; gap: 12px; font-size: 11px; font-weight: 600; letter-spacing: 0.18em; text-transform: uppercase; color: var(--ink-mute); opacity: 0; animation: fadeIn 0.8s 0.2s forwards; }
+  .hero-eyebrow::before { content: ''; width: 32px; height: 1px; background: var(--ink); }
+  .hero-eyebrow .dot { width: 6px; height: 6px; border-radius: 50%; background: var(--accent); animation: pulse 2.4s infinite; }
+
+  .hero h1 .word { display: inline-block; overflow: hidden; vertical-align: baseline; }
+  .hero h1 .word > span {
     display: inline-block;
+    transform: translateY(110%);
     opacity: 0;
-    transform: translateY(8px);
-    animation: wordReveal 0.5s cubic-bezier(0.16,1,0.3,1) forwards;
+    animation: wordUp 0.7s cubic-bezier(0.22, 0.61, 0.36, 1) forwards;
+    animation-delay: var(--d, 0s);
   }
-  @keyframes wordReveal {
-    to { opacity: 1; transform: translateY(0); }
-  }
-  @media (prefers-reduced-motion: reduce) {
-    h1 .word { opacity: 1; transform: none; animation: none; }
-  }
+  @keyframes wordUp { to { transform: translateY(0); opacity: 1; } }
+  @keyframes fadeIn { to { opacity: 1; } }
+  @keyframes pulse { 0%,100% { opacity: 1; transform: scale(1); } 50% { opacity: 0.4; transform: scale(0.7); } }
 
-  h1 em {
-    font-family: 'Instrument Serif', serif;
-    font-weight: 400;
-    font-style: italic;
-    color: var(--blue);
-    letter-spacing: -1.5px;
-  }
+  .hero-sub { font-size: clamp(17px, 1.4vw, 20px); color: var(--ink-soft); max-width: 540px; line-height: 1.55; opacity: 0; animation: fadeIn 0.8s 1.2s forwards; }
+  .hero-actions { display: flex; gap: 12px; flex-wrap: wrap; opacity: 0; animation: fadeIn 0.8s 1.4s forwards; }
 
-  .eyebrow {
-    display: inline-flex;
-    align-items: center;
-    gap: 14px;
-    margin-bottom: 22px;
-    font-size: 12px;
-    font-weight: 700;
-    letter-spacing: 2px;
-    text-transform: uppercase;
-    color: var(--ink2);
-    animation: fadeUp 0.6s both;
-  }
-  .eyebrow::before {
-    content: '';
-    width: 36px;
-    height: 1px;
-    background: var(--ink);
-  }
+  .waveform { height: 28px; width: 220px; display: flex; align-items: flex-end; gap: 3px; opacity: 0; animation: fadeIn 0.8s 1.6s forwards; }
+  .waveform span { flex: 1; background: var(--ink); height: 30%; transform-origin: bottom; animation: wave 1.6s ease-in-out infinite; }
+  .waveform span:nth-child(1)  { animation-delay: 0.0s; }
+  .waveform span:nth-child(2)  { animation-delay: 0.1s; background: var(--accent); }
+  .waveform span:nth-child(3)  { animation-delay: 0.2s; }
+  .waveform span:nth-child(4)  { animation-delay: 0.3s; }
+  .waveform span:nth-child(5)  { animation-delay: 0.4s; background: var(--accent); }
+  .waveform span:nth-child(6)  { animation-delay: 0.5s; }
+  .waveform span:nth-child(7)  { animation-delay: 0.6s; }
+  .waveform span:nth-child(8)  { animation-delay: 0.7s; }
+  .waveform span:nth-child(9)  { animation-delay: 0.8s; background: var(--accent); }
+  .waveform span:nth-child(10) { animation-delay: 0.9s; }
+  .waveform span:nth-child(11) { animation-delay: 1.0s; }
+  .waveform span:nth-child(12) { animation-delay: 1.1s; }
+  @keyframes wave { 0%,100% { transform: scaleY(0.35); } 50% { transform: scaleY(1); } }
 
-  .hero-sub {
-    font-size: clamp(16px, 2vw, 20px);
-    color: var(--ink3);
-    max-width: 520px;
-    line-height: 1.6;
-    margin-bottom: 40px;
-    animation: fadeUp 0.6s 0.2s both;
-  }
+  /* BUTTONS */
+  .btn { display: inline-flex; align-items: center; gap: 10px; padding: 14px 24px; border-radius: var(--r-btn); font-size: 14px; font-weight: 600; text-decoration: none; border: 1px solid transparent; transition: transform 0.15s ease-out, background 0.15s, color 0.15s, border-color 0.15s; font-family: inherit; cursor: pointer; }
+  .btn:hover { transform: translateY(-2px) scale(1.01); }
 
-  .hero-actions {
-    display: flex;
-    gap: 12px;
-    flex-wrap: wrap;
-    justify-content: center;
-    animation: fadeUp 0.6s 0.3s both;
-  }
+  .btn-primary { background: var(--accent); color: #ffffff; border-color: var(--accent); }
+  .btn-primary:hover { background: #103fa8; border-color: #103fa8; }
 
-  .btn-primary {
-    background: var(--ink);
-    color: var(--white);
-    padding: 14px 32px;
-    border-radius: 8px;
-    font-size: 15px;
-    font-weight: 700;
-    text-decoration: none;
-    transition: all 0.2s;
-    display: inline-flex;
-    align-items: center;
-    gap: 8px;
-    border: 2px solid var(--ink);
-  }
+  .btn-ghost { background: transparent; color: var(--ink); border-color: var(--hair); }
+  .btn-ghost:hover { border-color: var(--ink); }
 
-  .btn-primary:hover {
-    background: var(--blue);
-    border-color: var(--blue);
-    transform: translateY(-2px);
-    box-shadow: none;
-  }
+  .btn-white { background: #ffffff; color: var(--ink); border-color: #ffffff; }
+  .btn-white:hover { background: var(--paper); }
 
-  .btn-secondary {
-    background: transparent;
-    color: var(--ink);
-    padding: 14px 32px;
-    border-radius: 8px;
-    font-size: 15px;
-    font-weight: 600;
-    text-decoration: none;
-    transition: all 0.2s;
-    display: inline-flex;
-    align-items: center;
-    gap: 8px;
-    border: 2px solid var(--border);
-  }
+  .btn-ghost-white { background: transparent; color: rgba(255,255,255,0.85); border-color: var(--hair-dark); }
+  .btn-ghost-white:hover { border-color: rgba(255,255,255,0.5); color: #ffffff; }
 
-  .btn-secondary:hover {
-    border-color: var(--ink);
-    transform: translateY(-2px);
-  }
+  /* PROOF STRIP */
+  .proof-strip { border-top: 1px solid var(--hair); border-bottom: 1px solid var(--hair); padding: 22px 32px; display: flex; flex-wrap: wrap; align-items: center; justify-content: center; gap: 40px; }
+  .proof-item { display: inline-flex; align-items: center; gap: 10px; font-size: 12px; font-weight: 500; letter-spacing: 0.06em; text-transform: uppercase; color: var(--ink-soft); }
+  .proof-item::before { content: ''; width: 6px; height: 6px; background: var(--accent); flex-shrink: 0; }
 
-  /* ── SOCIAL PROOF STRIP ── */
-  .proof-strip {
-    padding: 20px 40px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 40px;
-    border-top: 1px solid var(--border);
-    border-bottom: 1px solid var(--border);
-    background: var(--white);
-    flex-wrap: wrap;
-    animation: fadeUp 0.6s 0.4s both;
-  }
+  /* SECTION */
+  .section { max-width: 1280px; margin: 0 auto; padding: 160px 32px; }
+  .section-head { display: grid; grid-template-columns: 1fr 2fr; gap: 60px; align-items: end; margin-bottom: 80px; }
+  .section-head .label { font-size: 11px; font-weight: 600; letter-spacing: 0.18em; text-transform: uppercase; color: var(--ink-mute); }
+  .section-head .label::before { content: ''; display: block; width: 32px; height: 1px; background: var(--ink); margin-bottom: 14px; }
+  .section-head .title { max-width: 720px; }
+  .section-head .lede { margin-top: 18px; font-size: 18px; color: var(--ink-soft); max-width: 540px; line-height: 1.55; }
 
-  .proof-item {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    color: var(--ink2);
-    font-size: 14px;
-    font-weight: 500;
-  }
+  /* STEPS */
+  .steps { display: grid; grid-template-columns: repeat(3, 1fr); border-top: 1px solid var(--hair); border-bottom: 1px solid var(--hair); }
+  .step { padding: 56px 36px 56px 0; border-right: 1px solid var(--hair); }
+  .step:last-child { border-right: none; }
+  .step:not(:first-child) { padding-left: 36px; }
+  .step-num { font-family: 'Cabinet Grotesk', sans-serif; font-weight: 700; font-size: 13px; letter-spacing: 0.1em; color: var(--accent); margin-bottom: 32px; display: block; }
+  .step h3 { font-family: 'Cabinet Grotesk', sans-serif; font-weight: 700; letter-spacing: -0.02em; font-size: 28px; line-height: 1.05; color: var(--ink); margin-bottom: 14px; }
+  .step p { font-size: 15px; color: var(--ink-soft); line-height: 1.6; }
 
-  .proof-icon {
-    width: 32px;
-    height: 32px;
-    border-radius: 8px;
-    background: var(--off-white);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 16px;
-  }
+  /* TESTIMONIALS */
+  .testimonials { display: grid; grid-template-columns: 1fr 1fr 1fr; border-top: 1px solid var(--hair); }
+  .testimonial { padding: 56px 32px 56px 0; border-right: 1px solid var(--hair); border-bottom: 1px solid var(--hair); }
+  .testimonial:last-child { border-right: none; }
+  .testimonial:not(:first-child) { padding-left: 32px; }
+  .testimonial-quote { font-family: 'Instrument Serif', serif; font-style: italic; font-size: 24px; line-height: 1.3; color: var(--ink); margin-bottom: 28px; letter-spacing: -0.01em; }
+  .testimonial-author { display: flex; flex-direction: column; gap: 2px; }
+  .testimonial-name { font-size: 13px; font-weight: 600; letter-spacing: 0.04em; text-transform: uppercase; color: var(--ink); }
+  .testimonial-role { font-size: 13px; color: var(--ink-mute); }
 
-  /* ── HOW IT WORKS ── */
-  .section {
-    padding: 100px 40px;
-    max-width: 1100px;
-    margin: 0 auto;
-  }
+  /* USE CASES */
+  .use-cases { display: grid; grid-template-columns: 1fr 1fr; border-top: 1px solid var(--hair); }
+  .use-card { padding: 60px 40px 60px 0; border-right: 1px solid var(--hair); border-bottom: 1px solid var(--hair); }
+  .use-card:last-child { border-right: none; padding-left: 40px; }
+  .use-tag { display: inline-block; font-size: 11px; font-weight: 600; letter-spacing: 0.18em; text-transform: uppercase; color: var(--accent); margin-bottom: 28px; }
+  .use-card h3 { font-family: 'Cabinet Grotesk', sans-serif; font-weight: 700; letter-spacing: -0.03em; font-size: clamp(32px, 3.4vw, 48px); line-height: 1.0; color: var(--ink); margin-bottom: 18px; }
+  .use-card h3 em { font-family: 'Instrument Serif', serif; font-weight: 400; font-style: italic; color: var(--accent); letter-spacing: -0.02em; }
+  .use-card p { font-size: 16px; color: var(--ink-soft); line-height: 1.6; margin-bottom: 28px; max-width: 460px; }
+  .use-features { list-style: none; display: flex; flex-direction: column; gap: 10px; }
+  .use-features li { font-size: 14px; color: var(--ink-soft); display: grid; grid-template-columns: 18px 1fr; gap: 12px; align-items: baseline; }
+  .use-features li::before { content: ''; width: 6px; height: 1px; background: var(--accent); transform: translateY(-4px); }
 
-  .section-label {
-    font-size: 11px;
-    font-weight: 700;
-    letter-spacing: 2px;
-    text-transform: uppercase;
-    color: var(--blue);
-    margin-bottom: 12px;
-  }
+  /* FEATURES */
+  .features-grid { display: grid; grid-template-columns: repeat(3, 1fr); border-top: 1px solid var(--hair); border-left: 1px solid var(--hair); }
+  .feature-card { padding: 44px 32px; border-right: 1px solid var(--hair); border-bottom: 1px solid var(--hair); transition: background 0.2s; }
+  .feature-card:hover { background: var(--paper); }
+  .feature-num { font-family: 'Cabinet Grotesk', sans-serif; font-weight: 700; font-size: 12px; letter-spacing: 0.14em; color: var(--accent); margin-bottom: 36px; display: block; }
+  .feature-card h3 { font-family: 'Cabinet Grotesk', sans-serif; font-weight: 700; letter-spacing: -0.02em; font-size: 22px; line-height: 1.1; color: var(--ink); margin-bottom: 12px; }
+  .feature-card p { font-size: 14px; color: var(--ink-soft); line-height: 1.6; }
 
-  .section-title {
-    font-family: 'Geist', -apple-system, BlinkMacSystemFont, 'Inter', sans-serif;
-    font-weight: 800;
-    letter-spacing: -1.5px;
-    font-size: clamp(36px, 5vw, 60px);
-    line-height: 1.05;
-    color: var(--ink);
-    margin-bottom: 16px;
-    max-width: 640px;
-  }
-  .section-title em {
-    font-family: 'Instrument Serif', serif;
-    font-weight: 400;
-    font-style: italic;
-    color: var(--blue);
-    letter-spacing: -0.8px;
-  }
+  /* PRICING */
+  .billing-toggle { display: flex; align-items: center; justify-content: flex-start; gap: 14px; margin-bottom: 56px; flex-wrap: wrap; }
+  .billing-label { font-size: 13px; cursor: pointer; user-select: none; background: none; border: none; font-family: inherit; padding: 0; color: var(--ink-mute); font-weight: 500; }
+  .billing-label.active { color: var(--ink); font-weight: 600; }
+  .billing-switch { position: relative; width: 42px; height: 22px; background: var(--ink); border: none; border-radius: 100px; cursor: pointer; padding: 0; flex-shrink: 0; }
+  .billing-knob { position: absolute; top: 3px; left: 3px; width: 16px; height: 16px; background: #ffffff; border-radius: 50%; transition: transform 0.25s; }
+  .billing-save { font-size: 11px; font-weight: 600; letter-spacing: 0.14em; text-transform: uppercase; color: var(--accent); }
 
-  .section-sub {
-    font-size: 17px;
-    color: var(--ink3);
-    max-width: 500px;
-    line-height: 1.6;
-    margin-bottom: 60px;
-  }
+  .pricing-grid { display: grid; grid-template-columns: repeat(3, 1fr); border-top: 1px solid var(--hair); border-left: 1px solid var(--hair); }
+  .price-card { padding: 48px 36px; border-right: 1px solid var(--hair); border-bottom: 1px solid var(--hair); background: var(--bg); color: var(--ink); display: flex; flex-direction: column; }
+  .price-card.featured { background: var(--bg-dark); color: #ffffff; border-right-color: var(--bg-dark); }
 
-  /* Steps */
-  .steps {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 2px;
-    background: var(--border);
-    border-radius: 0;
-    overflow: hidden;
-  }
-
-  .step {
-    background: var(--white);
-    padding: 36px 32px;
-    position: relative;
-  }
-
-  .step:first-child { border-radius: 0; }
-  .step:last-child { border-radius: 0; }
-
-  .step-num {
-    font-family: 'Instrument Serif', serif;
-    font-style: italic;
-    font-size: 64px;
-    color: var(--blue);
-    opacity: 0.85;
-    line-height: 1;
-    margin-bottom: 16px;
-    display: block;
-  }
-
-  .step h3 {
-    font-size: 18px;
-    font-weight: 700;
-    color: var(--ink);
-    margin-bottom: 10px;
-  }
-
-  .step p {
-    font-size: 14px;
-    color: var(--ink3);
-    line-height: 1.6;
-  }
-
-  /* ── TESTIMONIALS ── */
-  .testimonials {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 20px;
-  }
-
-  .testimonial {
-    background: var(--white);
-    border: 1px solid var(--border);
-    border-radius: var(--radius);
-    padding: 28px;
-    display: flex;
-    flex-direction: column;
-    gap: 24px;
-  }
-
-  .testimonial-quote {
-    font-family: 'Instrument Serif', serif;
-    font-size: 19px;
-    line-height: 1.45;
-    color: var(--ink);
-    flex: 1;
-  }
-
-  .testimonial-author {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-  }
-
-  .testimonial-avatar {
-    width: 40px;
-    height: 40px;
-    border-radius: 50%;
-    background: var(--blue-light);
-    color: var(--blue);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 14px;
-    font-weight: 700;
-    flex-shrink: 0;
-  }
-
-  .testimonial-name {
-    font-size: 14px;
-    font-weight: 700;
-    color: var(--ink);
-  }
-
-  .testimonial-role {
-    font-size: 12px;
-    color: var(--ink3);
-  }
-
-  /* ── FOR WHO ── */
-  .use-cases {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 24px;
-    margin-top: 20px;
-  }
-
-  .use-card {
-    background: var(--white);
-    border: 1px solid var(--border);
-    border-radius: var(--radius);
-    padding: 36px;
-    transition: all 0.25s;
-    position: relative;
-    overflow: hidden;
-  }
-
-  .use-card:hover {
-    border-color: var(--blue);
-    box-shadow: none;
-    transform: translateY(-4px);
-  }
-
-  .use-card-accent {
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    height: 3px;
-  }
-
-  .use-card.office .use-card-accent { background: var(--blue); }
-  .use-card.room .use-card-accent { background: var(--green); }
-
-  .use-tag {
-    display: inline-block;
-    font-size: 11px;
-    font-weight: 700;
-    letter-spacing: 1.5px;
-    text-transform: uppercase;
-    padding: 4px 12px;
-    border-radius: 8px;
-    margin-bottom: 20px;
-  }
-
-  .use-card.office .use-tag { background: var(--blue-light); color: var(--blue); }
-  .use-card.room .use-tag { background: var(--green-light); color: var(--green); }
-
-  .use-card h3 {
-    font-family: 'Geist', -apple-system, BlinkMacSystemFont, 'Inter', sans-serif;
-    font-weight: 800;
-    letter-spacing: -0.7px;
-    font-size: 26px;
-    color: var(--ink);
-    margin-bottom: 12px;
-    line-height: 1.15;
-  }
-  .use-card h3 em {
-    font-family: 'Instrument Serif', serif;
-    font-weight: 400;
-    font-style: italic;
-    color: var(--blue);
-  }
-
-  .use-card p {
-    font-size: 15px;
-    color: var(--ink3);
-    line-height: 1.65;
-    margin-bottom: 24px;
-  }
-
-  .use-features {
-    list-style: none;
-    display: flex;
-    flex-direction: column;
-    gap: 8px;
-  }
-
-  .use-features li {
-    font-size: 14px;
-    color: var(--ink2);
-    display: flex;
-    align-items: flex-start;
-    gap: 10px;
-    line-height: 1.4;
-  }
-
-  .use-features li::before {
-    content: '✓';
-    font-weight: 700;
-    flex-shrink: 0;
-    margin-top: 1px;
-  }
-
-  .use-card.office .use-features li::before { color: var(--blue); }
-  .use-card.room .use-features li::before { color: var(--green); }
-
-  /* ── PRICING ── */
-  .billing-toggle {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 14px;
-    margin-bottom: 36px;
-    flex-wrap: wrap;
-  }
-
-  .billing-label {
-    font-size: 14px;
-    cursor: pointer;
-    user-select: none;
-    transition: color 0.2s;
-    background: none;
-    border: none;
-    font-family: inherit;
-    padding: 0;
-  }
-
-  .billing-switch {
-    position: relative;
-    width: 46px;
-    height: 24px;
-    background: var(--ink);
-    border: none;
-    border-radius: 8px;
-    cursor: pointer;
-    padding: 0;
-    flex-shrink: 0;
-  }
-
-  .billing-knob {
-    position: absolute;
-    top: 3px;
-    left: 3px;
-    width: 18px;
-    height: 18px;
-    background: var(--white);
-    border-radius: 50%;
-    transition: transform 0.25s;
-  }
-
-  .billing-save {
-    font-size: 11px;
-    font-weight: 700;
-    letter-spacing: 1px;
-    text-transform: uppercase;
-    color: var(--green);
-    background: var(--green-light);
-    padding: 4px 10px;
-    border-radius: 8px;
-  }
-
-  .pricing-wrap {
-    background: var(--white);
-    border: 1px solid var(--border);
-    border-radius: 0;
-    overflow: hidden;
-  }
-
-  .pricing-grid {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-  }
-
-  .price-card {
-    padding: 40px 36px;
-    border-right: 1px solid var(--border);
-    position: relative;
-  }
-
-  .price-card:last-child { border-right: none; }
-
-  .price-card.featured {
-    background: var(--ink);
-    color: var(--white);
-  }
-
-  .price-label {
-    font-size: 11px;
-    font-weight: 700;
-    letter-spacing: 2px;
-    text-transform: uppercase;
-    color: var(--ink3);
-    margin-bottom: 20px;
-  }
-
-  .price-card.featured .price-label { color: rgba(255,255,255,0.5); }
-
-  .price-amount {
-    font-family: 'Geist', -apple-system, BlinkMacSystemFont, 'Inter', sans-serif;
-    font-weight: 800;
-    letter-spacing: -1.5px;
-    font-size: 56px;
-    line-height: 1;
-    color: var(--ink);
-    margin-bottom: 4px;
-  }
-
-  .price-card.featured .price-amount { color: var(--white); }
-
-  .price-per {
-    font-size: 13px;
-    color: var(--ink3);
-    margin-bottom: 24px;
-  }
-
-  .price-card.featured .price-per { color: rgba(255,255,255,0.5); }
-
-  .price-desc {
-    font-size: 14px;
-    color: var(--ink3);
-    line-height: 1.6;
-    margin-bottom: 28px;
-  }
-
+  .price-label { font-size: 11px; font-weight: 600; letter-spacing: 0.18em; text-transform: uppercase; color: var(--ink-mute); margin-bottom: 28px; }
+  .price-card.featured .price-label { color: rgba(255,255,255,0.55); }
+  .price-amount { font-family: 'Cabinet Grotesk', sans-serif; font-weight: 700; letter-spacing: -0.04em; font-size: 64px; line-height: 1; color: var(--ink); margin-bottom: 6px; }
+  .price-card.featured .price-amount { color: #ffffff; }
+  .price-per { font-size: 13px; color: var(--ink-mute); margin-bottom: 24px; }
+  .price-card.featured .price-per { color: rgba(255,255,255,0.55); }
+  .price-desc { font-size: 14px; color: var(--ink-soft); line-height: 1.6; margin-bottom: 32px; }
   .price-card.featured .price-desc { color: rgba(255,255,255,0.7); }
-
-  .price-features {
-    list-style: none;
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-    margin-bottom: 32px;
-  }
-
-  .price-features li {
-    font-size: 13px;
-    color: var(--ink2);
-    display: flex;
-    align-items: center;
-    gap: 10px;
-  }
-
+  .price-features { list-style: none; display: flex; flex-direction: column; gap: 12px; margin-bottom: 36px; flex: 1; }
+  .price-features li { font-size: 14px; color: var(--ink-soft); display: grid; grid-template-columns: 18px 1fr; gap: 12px; align-items: baseline; }
   .price-card.featured .price-features li { color: rgba(255,255,255,0.8); }
+  .price-features li::before { content: ''; width: 6px; height: 1px; background: var(--accent); transform: translateY(-4px); }
+  .price-card.featured .price-features li::before { background: var(--accent-hi); }
 
-  .price-features li::before {
-    content: '✓';
-    font-weight: 700;
-    color: var(--blue);
-    flex-shrink: 0;
-  }
+  .price-btn { display: block; width: 100%; text-align: center; padding: 13px 22px; border-radius: var(--r-btn); font-size: 13px; font-weight: 600; text-decoration: none; cursor: pointer; font-family: inherit; border: 1px solid transparent; transition: transform 0.15s, background 0.15s, border-color 0.15s, color 0.15s; }
+  .price-btn:hover { transform: translateY(-2px); }
+  .price-btn-outline { border-color: var(--hair); color: var(--ink); background: transparent; }
+  .price-btn-outline:hover { border-color: var(--ink); }
+  .price-btn-primary { background: var(--accent); color: #ffffff; border-color: var(--accent); }
+  .price-btn-primary:hover { background: #103fa8; border-color: #103fa8; }
+  .price-btn-dark { background: #ffffff; color: var(--ink); border-color: #ffffff; }
+  .price-btn-dark:hover { background: var(--paper); }
 
-  .price-card.featured .price-features li::before { color: #7dd3fc; }
-
-  .price-btn {
-    display: block;
-    width: 100%;
-    text-align: center;
-    padding: 12px 24px;
-    border-radius: 8px;
-    font-size: 14px;
-    font-weight: 700;
-    text-decoration: none;
-    transition: all 0.2s;
-    cursor: pointer;
-    font-family: inherit;
-  }
-
-  .price-btn:disabled { opacity: 0.6; cursor: not-allowed; }
-
-  .price-btn-outline {
-    border: 2px solid var(--border);
-    color: var(--ink);
-  }
-
-  .price-btn-outline:hover {
-    border-color: var(--ink);
-    background: var(--off-white);
-  }
-
-  .price-btn-primary {
-    background: var(--blue);
-    color: var(--white);
-    border: 2px solid var(--blue);
-  }
-
-  .price-btn-primary:hover {
-    background: #1248b3;
-    transform: translateY(-1px);
-    box-shadow: none;
-  }
-
-  .price-btn-dark {
-    background: var(--white);
-    color: var(--ink);
-    border: 2px solid var(--white);
-  }
-
-  .price-btn-dark:hover {
-    background: var(--off-white);
-    transform: translateY(-1px);
-  }
-
-  /* ── FEATURES GRID ── */
-  .features-grid {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 1px;
-    background: var(--border);
-    border-radius: 0;
-    overflow: hidden;
-  }
-
-  .feature-card {
-    background: var(--white);
-    padding: 32px 28px;
-  }
-
-  .feature-card:nth-child(1) { border-radius: 0; }
-  .feature-card:nth-child(3) { border-radius: 0; }
-  .feature-card:nth-child(4) { border-radius: 0; }
-  .feature-card:nth-child(6) { border-radius: 0 0 20px 0; }
-
-  .feature-icon {
-    width: 44px;
-    height: 44px;
-    border-radius: 12px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 20px;
-    margin-bottom: 16px;
-  }
-
-  .fi-blue { background: var(--blue-light); }
-  .fi-green { background: var(--green-light); }
-  .fi-amber { background: var(--amber-light); }
-
-  .feature-card h3 {
-    font-size: 16px;
-    font-weight: 700;
-    color: var(--ink);
-    margin-bottom: 8px;
-  }
-
-  .feature-card p {
-    font-size: 13px;
-    color: var(--ink3);
-    line-height: 1.6;
-  }
-
-  /* ── FAQ ── */
-  .faq-list {
-    display: flex;
-    flex-direction: column;
-    gap: 12px;
-    max-width: 760px;
-  }
-
-  .faq-item {
-    background: var(--white);
-    border: 1px solid var(--border);
-    border-radius: var(--radius);
-    overflow: hidden;
-    transition: border-color 0.2s;
-  }
-
-  .faq-item[open] { border-color: var(--blue); }
-
-  .faq-item summary {
-    list-style: none;
-    cursor: pointer;
-    padding: 22px 28px;
-    font-size: 16px;
-    font-weight: 700;
-    color: var(--ink);
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 16px;
-  }
-
+  /* FAQ */
+  .faq-list { border-top: 1px solid var(--hair); max-width: 920px; }
+  .faq-item { border-bottom: 1px solid var(--hair); }
+  .faq-item summary { list-style: none; cursor: pointer; padding: 28px 0; font-family: 'Cabinet Grotesk', sans-serif; font-size: clamp(20px, 2vw, 28px); font-weight: 600; letter-spacing: -0.02em; color: var(--ink); display: flex; align-items: center; justify-content: space-between; gap: 24px; line-height: 1.2; }
   .faq-item summary::-webkit-details-marker { display: none; }
+  .faq-item summary::after { content: '+'; font-family: 'Cabinet Grotesk', sans-serif; font-size: 28px; line-height: 1; color: var(--ink-mute); transition: transform 0.25s, color 0.2s; flex-shrink: 0; font-weight: 400; }
+  .faq-item[open] summary::after { transform: rotate(45deg); color: var(--accent); }
+  .faq-item p { padding: 0 0 28px; font-size: 16px; color: var(--ink-soft); line-height: 1.65; max-width: 720px; }
 
-  .faq-item summary::after {
-    content: '+';
-    font-family: 'Instrument Serif', serif;
-    font-size: 28px;
-    line-height: 1;
-    color: var(--ink3);
-    transition: transform 0.25s, color 0.2s;
-    flex-shrink: 0;
-  }
+  /* DARK CTA */
+  .cta-section { background: var(--bg-dark); color: #ffffff; padding: 160px 32px; }
+  .cta-inner { max-width: 1280px; margin: 0 auto; display: grid; grid-template-columns: 1fr 1fr; gap: 80px; align-items: center; }
+  .cta-section h2 { color: #ffffff; font-size: clamp(48px, 6vw, 96px); line-height: 0.95; }
+  .cta-section h2 em { font-family: 'Instrument Serif', serif; font-weight: 400; font-style: italic; color: var(--accent-hi); letter-spacing: -0.02em; }
+  .cta-side p { font-size: 17px; color: rgba(255,255,255,0.7); line-height: 1.6; max-width: 420px; margin-bottom: 36px; }
+  .cta-actions { display: flex; gap: 12px; flex-wrap: wrap; }
 
-  .faq-item[open] summary::after {
-    transform: rotate(45deg);
-    color: var(--blue);
-  }
-
-  .faq-item p {
-    padding: 0 28px 24px;
-    font-size: 15px;
-    color: var(--ink2);
-    line-height: 1.65;
-  }
-
-  /* ── CTA SECTION ── */
-  .cta-section {
-    margin: 0 40px 100px;
-    background: var(--ink);
-    border-radius: 28px;
-    padding: 80px 60px;
-    text-align: center;
-    position: relative;
-    overflow: hidden;
-  }
-
-  .cta-section::before {
-    content: '';
-    position: absolute;
-    inset: 0;
-    background:
-      radial-gradient(ellipse 60% 80% at 20% 50%, rgba(26,86,219,0.3) 0%, transparent 60%),
-      radial-gradient(ellipse 40% 60% at 80% 50%, rgba(13,122,85,0.2) 0%, transparent 60%);
-    pointer-events: none;
-  }
-
-  .cta-section h2 {
-    font-family: 'Geist', -apple-system, BlinkMacSystemFont, 'Inter', sans-serif;
-    font-weight: 800;
-    letter-spacing: -1.8px;
-    font-size: clamp(38px, 5.5vw, 64px);
-    color: var(--white);
-    margin-bottom: 16px;
-    position: relative;
-    line-height: 1.05;
-  }
-
-  .cta-section h2 em {
-    font-family: 'Instrument Serif', serif;
-    font-weight: 400;
-    color: #93b4ff;
-    font-style: italic;
-    letter-spacing: -1px;
-  }
-
-  .cta-section p {
-    font-size: 17px;
-    color: rgba(255,255,255,0.6);
-    margin-bottom: 40px;
-    position: relative;
-    max-width: 480px;
-    margin-left: auto;
-    margin-right: auto;
-    line-height: 1.6;
-  }
-
-  .cta-actions {
-    display: flex;
-    gap: 12px;
-    justify-content: center;
-    flex-wrap: wrap;
-    position: relative;
-  }
-
-  .btn-white {
-    background: var(--white);
-    color: var(--ink);
-    padding: 14px 32px;
-    border-radius: 8px;
-    font-size: 15px;
-    font-weight: 700;
-    text-decoration: none;
-    transition: all 0.2s;
-    display: inline-flex;
-    align-items: center;
-    gap: 8px;
-  }
-
-  .btn-white:hover {
-    background: var(--off-white);
-    transform: translateY(-2px);
-    box-shadow: 0 8px 24px rgba(0,0,0,0.3);
-  }
-
-  .btn-ghost-white {
-    background: transparent;
-    color: rgba(255,255,255,0.8);
-    padding: 14px 32px;
-    border-radius: 8px;
-    font-size: 15px;
-    font-weight: 600;
-    text-decoration: none;
-    transition: all 0.2s;
-    display: inline-flex;
-    align-items: center;
-    gap: 8px;
-    border: 2px solid rgba(255,255,255,0.25);
-  }
-
-  .btn-ghost-white:hover {
-    border-color: rgba(255,255,255,0.6);
-    color: var(--white);
-    transform: translateY(-2px);
-  }
-
-  /* ── FOOTER ── */
-  footer {
-    border-top: 1px solid var(--border);
-    padding: 40px;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    flex-wrap: wrap;
-    gap: 20px;
-  }
-
-  .footer-logo {
-    display: inline-flex;
-    align-items: center;
-    gap: 9px;
-    color: var(--ink);
-  }
-
-  .footer-logo img { height: 24px; width: 24px; display: block; }
-
-  .footer-logo .fl-word {
-    font-family: 'Geist', -apple-system, BlinkMacSystemFont, 'Inter', sans-serif;
-    font-weight: 800;
-    font-size: 17px;
-    letter-spacing: -0.4px;
-    line-height: 1;
-  }
-
-  .footer-logo .fl-word em {
-    font-family: 'Instrument Serif', serif;
-    font-weight: 400;
-    font-style: italic;
-    color: var(--blue);
-  }
-
-  .footer-links {
-    display: flex;
-    gap: 28px;
-    list-style: none;
-  }
-
-  .footer-links a {
-    color: var(--ink3);
-    text-decoration: none;
-    font-size: 13px;
-    transition: color 0.2s;
-  }
-
-  .footer-links a:hover { color: var(--ink); }
-
-  .footer-copy {
-    font-size: 13px;
-    color: var(--ink3);
-  }
-
-  /* ── MODAL ── */
-  .modal-overlay {
-    position: fixed;
-    inset: 0;
-    background: rgba(15,14,12,0.6);
-    backdrop-filter: blur(4px);
-    z-index: 1000;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    padding: 20px;
-    animation: fadeIn 0.18s ease-out;
-  }
-
-  .modal-overlay[hidden] { display: none; }
-
-  .modal-card {
-    background: var(--white);
-    border-radius: 0;
-    padding: 36px 32px 32px;
-    width: 100%;
-    max-width: 440px;
-    position: relative;
-    box-shadow: 0 30px 80px rgba(15,14,12,0.3);
-    animation: modalIn 0.22s ease-out;
-  }
-
-  @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
-  @keyframes modalIn {
-    from { opacity: 0; transform: translateY(16px) scale(0.98); }
-    to { opacity: 1; transform: translateY(0) scale(1); }
-  }
-
-  .modal-close {
-    position: absolute;
-    top: 14px;
-    right: 14px;
-    background: transparent;
-    border: none;
-    font-size: 24px;
-    line-height: 1;
-    color: var(--ink3);
-    cursor: pointer;
-    padding: 6px 10px;
-    border-radius: 8px;
-    transition: background 0.15s, color 0.15s;
-  }
-
-  .modal-close:hover { background: var(--off-white); color: var(--ink); }
-
-  .modal-title {
-    font-family: 'Geist', -apple-system, BlinkMacSystemFont, 'Inter', sans-serif;
-    font-weight: 800;
-    letter-spacing: -0.8px;
-    font-size: 30px;
-    color: var(--ink);
-    margin-bottom: 6px;
-    line-height: 1.1;
-  }
-  .modal-title em {
-    font-family: 'Instrument Serif', serif;
-    font-weight: 400;
-    font-style: italic;
-    color: var(--blue);
-  }
-
-  .modal-desc {
-    font-size: 14px;
-    color: var(--ink3);
-    margin-bottom: 22px;
-    line-height: 1.5;
-  }
-
-  .modal-label {
-    display: block;
-    font-size: 12px;
-    font-weight: 700;
-    color: var(--ink2);
-    margin-bottom: 14px;
-    letter-spacing: 0.3px;
-  }
-
-  .modal-label input {
-    display: block;
-    width: 100%;
-    margin-top: 6px;
-    padding: 12px 14px;
-    border: 1px solid var(--border);
-    border-radius: 10px;
-    font-size: 15px;
-    font-family: inherit;
-    color: var(--ink);
-    background: var(--off-white);
-    transition: border-color 0.15s, background 0.15s;
-  }
-
-  .modal-label input:focus {
-    outline: none;
-    border-color: var(--blue);
-    background: var(--white);
-  }
-
-  .modal-submit {
-    width: 100%;
-    margin-top: 8px;
-    padding: 13px 20px;
-    background: var(--ink);
-    color: var(--white);
-    border: none;
-    border-radius: 8px;
-    font-size: 15px;
-    font-weight: 700;
-    font-family: inherit;
-    cursor: pointer;
-    transition: background 0.15s;
-  }
-
-  .modal-submit:hover { background: var(--blue); }
-  .modal-submit:disabled { opacity: 0.6; cursor: not-allowed; }
-
-  .modal-error {
-    margin-top: 14px;
-    padding: 10px 12px;
-    background: #fef2f2;
-    color: #b91c1c;
-    border-radius: 8px;
-    font-size: 13px;
-    text-align: center;
-  }
-
-  /* ── ANIMATIONS ── */
-  @keyframes fadeUp {
-    from { opacity: 0; transform: translateY(24px); }
-    to { opacity: 1; transform: translateY(0); }
-  }
-
-  .fade-in {
-    opacity: 0;
-    transform: translateY(20px);
-    transition: opacity 0.6s, transform 0.6s;
-  }
-
-  .fade-in.visible {
-    opacity: 1;
-    transform: translateY(0);
-  }
-
-  /* ── APP MOCKUP ── */
-  .mockup-strip {
-    padding: 60px 40px;
-    background: var(--white);
-    border-top: 1px solid var(--border);
-    border-bottom: 1px solid var(--border);
-    overflow: hidden;
-  }
-
-  .mockup-inner {
-    max-width: 900px;
-    margin: 0 auto;
-    background: #f8f7ff;
-    border-radius: 0;
-    border: 1px solid #e2e0f5;
-    overflow: hidden;
-    box-shadow: 0 20px 60px rgba(26,86,219,0.08);
-  }
-
-  .mockup-header {
-    background: rgba(255,255,255,0.95);
-    border-bottom: 1px solid #e2e0f5;
-    padding: 10px 20px;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-  }
-
-  .mockup-logo {
-    display: inline-flex;
-    align-items: center;
-    gap: 7px;
-    color: var(--ink);
-  }
+  /* MOCKUP */
+  .mockup-strip { border-top: 1px solid var(--hair); border-bottom: 1px solid var(--hair); padding: 100px 32px; background: var(--paper); }
+  .mockup-inner { max-width: 980px; margin: 0 auto; background: #ffffff; border: 1px solid var(--hair); overflow: hidden; }
+  .mockup-header { border-bottom: 1px solid var(--hair); padding: 14px 22px; display: flex; align-items: center; justify-content: space-between; }
+  .mockup-logo { display: inline-flex; align-items: center; gap: 8px; color: var(--ink); }
   .mockup-logo img { height: 18px; width: 18px; display: block; }
-  .mockup-logo .ml-word {
-    font-family: 'Geist', -apple-system, BlinkMacSystemFont, 'Inter', sans-serif;
-    font-weight: 800;
-    font-size: 14px;
-    letter-spacing: -0.3px;
-    line-height: 1;
-  }
-  .mockup-logo .ml-word em {
-    font-family: 'Instrument Serif', serif;
-    font-weight: 400;
-    font-style: italic;
-    color: var(--blue);
-  }
+  .mockup-logo .ml-word { font-family: 'Cabinet Grotesk', sans-serif; font-weight: 800; font-size: 14px; letter-spacing: -0.02em; line-height: 1; }
+  .mockup-logo .ml-word em { font-family: 'Instrument Serif', serif; font-weight: 400; font-style: italic; color: var(--accent); }
+  .mockup-sub { font-size: 10px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--ink-mute); margin-top: 2px; }
+  .mockup-credits { font-size: 13px; font-weight: 600; color: var(--accent); letter-spacing: 0.04em; }
+  .mockup-tabs { display: flex; border-bottom: 1px solid var(--hair); }
+  .mockup-tab { flex: 1; padding: 12px; text-align: center; font-size: 11px; font-weight: 500; color: var(--ink-mute); border-bottom: 1px solid transparent; }
+  .mockup-tab.active { color: var(--ink); border-bottom-color: var(--accent); }
+  .mockup-body { padding: 24px; display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 14px; }
+  .mockup-card { border: 1px solid var(--hair); padding: 16px; }
+  .mockup-song { display: flex; align-items: center; gap: 10px; margin-bottom: 12px; }
+  .mockup-art { width: 36px; height: 36px; flex-shrink: 0; background: var(--ink); }
+  .mockup-art-2 { background: var(--accent); }
+  .mockup-art-3 { background: var(--ink-mute); }
+  .mockup-song-title { font-size: 11px; font-weight: 600; color: var(--ink); }
+  .mockup-song-artist { font-size: 10px; color: var(--ink-mute); }
+  .mockup-vote-row { display: grid; grid-template-columns: 1fr 1fr; gap: 4px; }
+  .mockup-vote { text-align: center; padding: 6px 4px; font-size: 9px; font-weight: 600; letter-spacing: 0.04em; border: 1px solid var(--hair); color: var(--ink-soft); }
+  .mockup-vote.accent { color: var(--accent); border-color: rgba(26,86,219,0.35); }
+  .mockup-pos { font-size: 10px; font-weight: 600; letter-spacing: 0.14em; text-transform: uppercase; color: var(--ink-mute); margin-bottom: 10px; }
 
-  .mockup-sub { font-size: 10px; color: var(--ink3); }
+  /* FOOTER */
+  footer { border-top: 1px solid var(--hair); padding: 40px 32px; max-width: 1280px; margin: 0 auto; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 20px; }
+  .footer-logo { display: inline-flex; align-items: center; gap: 9px; color: var(--ink); text-decoration: none; }
+  .footer-logo img { height: 22px; width: 22px; display: block; }
+  .footer-logo .fl-word { font-family: 'Cabinet Grotesk', sans-serif; font-weight: 800; font-size: 16px; letter-spacing: -0.02em; line-height: 1; }
+  .footer-logo .fl-word em { font-family: 'Instrument Serif', serif; font-weight: 400; font-style: italic; color: var(--accent); }
+  .footer-links { display: flex; gap: 28px; list-style: none; }
+  .footer-links a { color: var(--ink-mute); text-decoration: none; font-size: 13px; transition: color 0.15s; }
+  .footer-links a:hover { color: var(--ink); }
+  .footer-copy { font-size: 12px; color: var(--ink-mute); }
 
-  .mockup-credits {
-    font-size: 13px;
-    font-weight: 700;
-    color: var(--blue);
-  }
+  /* MODAL */
+  .modal-overlay { position: fixed; inset: 0; background: rgba(10,10,10,0.7); backdrop-filter: blur(6px); z-index: 1000; display: flex; align-items: center; justify-content: center; padding: 20px; animation: fadeIn 0.18s ease-out; }
+  .modal-overlay[hidden] { display: none; }
+  .modal-card { background: #ffffff; border: 1px solid var(--hair); padding: 40px 36px 32px; width: 100%; max-width: 460px; position: relative; animation: modalIn 0.22s ease-out; }
+  @keyframes modalIn { from { opacity: 0; transform: translateY(16px); } to { opacity: 1; transform: translateY(0); } }
+  .modal-close { position: absolute; top: 14px; right: 14px; background: transparent; border: none; font-size: 22px; line-height: 1; color: var(--ink-mute); cursor: pointer; padding: 6px 10px; transition: color 0.15s; }
+  .modal-close:hover { color: var(--ink); }
+  .modal-title { font-family: 'Cabinet Grotesk', sans-serif; font-weight: 700; letter-spacing: -0.03em; font-size: 36px; line-height: 1.0; color: var(--ink); margin-bottom: 8px; }
+  .modal-title em { font-family: 'Instrument Serif', serif; font-weight: 400; font-style: italic; color: var(--accent); }
+  .modal-desc { font-size: 14px; color: var(--ink-soft); margin-bottom: 28px; line-height: 1.5; }
+  .modal-label { display: block; font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.12em; color: var(--ink-mute); margin-bottom: 16px; }
+  .modal-label input { display: block; width: 100%; margin-top: 8px; padding: 13px 14px; border: 1px solid var(--hair); border-radius: var(--r-input); font-size: 15px; font-family: inherit; color: var(--ink); background: #ffffff; transition: border-color 0.15s; letter-spacing: 0; text-transform: none; font-weight: 400; }
+  .modal-label input:focus { outline: none; border-color: var(--accent); }
+  .modal-submit { width: 100%; margin-top: 8px; padding: 14px 20px; background: var(--accent); color: #ffffff; border: none; border-radius: var(--r-btn); font-size: 14px; font-weight: 600; font-family: inherit; cursor: pointer; transition: background 0.15s, transform 0.15s; }
+  .modal-submit:hover { background: #103fa8; transform: translateY(-1px); }
+  .modal-submit:disabled { opacity: 0.6; cursor: not-allowed; transform: none; }
+  .modal-error { margin-top: 14px; padding: 10px 12px; border: 1px solid #fca5a5; color: #b91c1c; font-size: 13px; text-align: center; }
 
-  .mockup-tabs {
-    display: flex;
-    background: rgba(255,255,255,0.9);
-    border-bottom: 1px solid #e2e0f5;
-  }
+  /* SCROLL FADE */
+  .fade-in { opacity: 0; transform: translateY(16px); transition: opacity 0.7s ease-out, transform 0.7s ease-out; }
+  .fade-in.visible { opacity: 1; transform: translateY(0); }
 
-  .mockup-tab {
-    flex: 1;
-    padding: 10px;
-    text-align: center;
-    font-size: 11px;
-    font-weight: 600;
-    color: var(--ink3);
-    border-bottom: 2px solid transparent;
-  }
+  @media (prefers-reduced-motion: reduce) { *, *::before, *::after { animation-duration: 0.001ms !important; transition-duration: 0.001ms !important; } }
 
-  .mockup-tab.active {
-    color: var(--blue);
-    border-bottom-color: var(--blue);
-  }
-
-  .mockup-body {
-    padding: 20px;
-    display: grid;
-    grid-template-columns: 1fr 1fr 1fr;
-    gap: 10px;
-  }
-
-  .mockup-card {
-    background: var(--white);
-    border-radius: 12px;
-    padding: 14px;
-    border: 1px solid rgba(26,86,219,0.1);
-  }
-
-  .mockup-song {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    margin-bottom: 10px;
-  }
-
-  .mockup-art {
-    width: 36px;
-    height: 36px;
-    border-radius: 6px;
-    flex-shrink: 0;
-  }
-
-  .mockup-art-1 { background: linear-gradient(135deg, #667eea, #764ba2); }
-  .mockup-art-2 { background: linear-gradient(135deg, #f093fb, #f5576c); }
-  .mockup-art-3 { background: linear-gradient(135deg, #4facfe, #00f2fe); }
-
-  .mockup-song-title { font-size: 11px; font-weight: 700; color: var(--ink); }
-  .mockup-song-artist { font-size: 10px; color: var(--ink3); }
-
-  .mockup-vote-row {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 4px;
-  }
-
-  .mockup-vote {
-    text-align: center;
-    padding: 5px 4px;
-    border-radius: 6px;
-    font-size: 9px;
-    font-weight: 700;
-  }
-
-  .mv-up { background: #f0fdf4; color: #16a34a; }
-  .mv-down { background: #fef2f2; color: #dc2626; }
-  .mv-one { background: #fffbeb; color: #d97706; }
-  .mv-guard { background: #eff6ff; color: var(--blue); }
-
-  .mockup-pos {
-    font-size: 10px;
-    font-weight: 700;
-    color: var(--ink3);
-    margin-bottom: 8px;
-  }
-
-  /* ── RESPONSIVE ── */
-  @media (max-width: 768px) {
+  @media (max-width: 900px) {
     nav { padding: 0 20px; }
-    .nav-links { display: none; }
-    .hero { padding: 100px 24px 60px; }
-    .vinyl { display: none; }
-    .section { padding: 60px 24px; }
+    .nav-links li:not(:last-child) { display: none; }
+    .hero { padding: 130px 20px 80px; gap: 28px; }
+    .section { padding: 100px 20px; }
+    .section-head { grid-template-columns: 1fr; gap: 24px; margin-bottom: 56px; }
     .steps { grid-template-columns: 1fr; }
-    .step:first-child, .step:last-child { border-radius: 0; }
+    .step { padding: 40px 0 !important; border-right: none; border-bottom: 1px solid var(--hair); }
+    .step:last-child { border-bottom: none; }
+    .testimonials { grid-template-columns: 1fr; }
+    .testimonial { padding: 40px 0 !important; border-right: none; }
     .use-cases { grid-template-columns: 1fr; }
-    .testimonials { grid-template-columns: 1fr; gap: 14px; }
-    .pricing-grid { grid-template-columns: 1fr; }
-    .price-card { border-right: none; border-bottom: 1px solid var(--border); }
-    .price-card.featured { border-bottom-color: rgba(255,255,255,0.1); }
+    .use-card { padding: 48px 0 !important; border-right: none; }
     .features-grid { grid-template-columns: 1fr 1fr; }
-    .cta-section { margin: 0 20px 60px; padding: 50px 28px; }
+    .pricing-grid { grid-template-columns: 1fr; }
+    .price-card.featured { border-right-color: var(--bg-dark); }
+    .cta-section { padding: 100px 20px; }
+    .cta-inner { grid-template-columns: 1fr; gap: 40px; }
+    .mockup-strip { padding: 60px 20px; }
     .mockup-body { grid-template-columns: 1fr; }
-    footer { flex-direction: column; align-items: flex-start; }
-    .proof-strip { gap: 20px; padding: 20px 24px; }
-    .billing-toggle { gap: 10px; }
-    .faq-item summary { padding: 18px 20px; font-size: 15px; }
-    .faq-item p { padding: 0 20px 20px; font-size: 14px; }
-    .modal-card { padding: 28px 22px 24px; border-radius: 16px; }
-    .modal-title { font-size: 26px; }
+    .proof-strip { gap: 18px; padding: 18px 20px; }
+    footer { flex-direction: column; align-items: flex-start; padding: 32px 20px; }
+    .modal-card { padding: 32px 24px 24px; }
+    .modal-title { font-size: 30px; }
   }
 </style>
 </head>
 <body>
 
-<!-- ── NAV ── -->
 <nav>
   <a href="/" class="nav-logo" aria-label="MyOfficeDJ home">
     <img class="nl-mark" src="/brand/logo-mark.svg" alt=""/>
@@ -1380,62 +354,40 @@
     <li><a href="#pricing">Pricing</a></li>
     <li><a href="#for-teams">For teams</a></li>
     <li><a href="#faq">FAQ</a></li>
-    <li><a href="https://app.myofficedj.com" class="nav-cta">Get started →</a></li>
+    <li><a href="https://app.myofficedj.com" class="nav-cta">Get started</a></li>
   </ul>
 </nav>
 
-<!-- ── HERO ── -->
 <section class="hero">
-  <div class="hero-bg"></div>
-  <div class="vinyl" aria-hidden="true"></div>
-
-  <div class="hero-badge">
-    <div class="hero-badge-dot"></div>
+  <div class="hero-eyebrow">
+    <span class="dot"></span>
     Now live · free to join
   </div>
 
-  <h1>Your office.<br>Your <em>soundtrack.</em></h1>
+  <h1 id="hero-title" data-text="Your office. Your soundtrack."></h1>
 
   <p class="hero-sub">
-    Employees earn credits by hitting milestones. They spend credits to control what plays.
-    Everyone gets a voice in the music — without anyone hogging the aux cord.
+    Employees earn credits by hitting milestones. They spend credits to control what plays. Everyone gets a voice in the music — without anyone hogging the aux cord.
   </p>
 
   <div class="hero-actions">
-    <a href="https://app.myofficedj.com" class="btn-primary">
-      Start your office → 
-    </a>
-    <a href="#how-it-works" class="btn-secondary">
-      See how it works
-    </a>
+    <a href="https://app.myofficedj.com" class="btn btn-primary">Start your office →</a>
+    <a href="#how-it-works" class="btn btn-ghost">See how it works</a>
+  </div>
+
+  <div class="waveform" aria-hidden="true">
+    <span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span>
   </div>
 </section>
 
-<!-- ── PROOF STRIP ── -->
 <div class="proof-strip fade-in">
-  <div class="proof-item">
-    <div class="proof-icon">🏢</div>
-    <span>Works for any office or team</span>
-  </div>
-  <div class="proof-item">
-    <div class="proof-icon">🎵</div>
-    <span>Millions of songs</span>
-  </div>
-  <div class="proof-item">
-    <div class="proof-icon">⚡</div>
-    <span>CRM &amp; HR system sync</span>
-  </div>
-  <div class="proof-item">
-    <div class="proof-icon">👥</div>
-    <span>Multi-tenant, every office isolated</span>
-  </div>
-  <div class="proof-item">
-    <div class="proof-icon">🚀</div>
-    <span>Live in under 10 minutes</span>
-  </div>
+  <div class="proof-item">Any office or team</div>
+  <div class="proof-item">Millions of songs</div>
+  <div class="proof-item">CRM &amp; HR sync</div>
+  <div class="proof-item">Multi-tenant, isolated</div>
+  <div class="proof-item">Live in under ten minutes</div>
 </div>
 
-<!-- ── APP MOCKUP ── -->
 <div class="mockup-strip fade-in">
   <div class="mockup-inner">
     <div class="mockup-header">
@@ -1444,31 +396,31 @@
           <img src="/brand/logo-mark.svg" alt=""/>
           <span class="ml-word">My<em>OfficeDJ</em></span>
         </div>
-        <div class="mockup-sub">CODE EMTG01</div>
+        <div class="mockup-sub">Code EMTG01</div>
       </div>
       <div class="mockup-credits">⚡ 1,240 cr</div>
     </div>
     <div class="mockup-tabs">
-      <div class="mockup-tab active">🎵 Queue</div>
-      <div class="mockup-tab">➕ Request</div>
-      <div class="mockup-tab">🏆 Report Win</div>
-      <div class="mockup-tab">⚡ Credits</div>
+      <div class="mockup-tab active">Queue</div>
+      <div class="mockup-tab">Request</div>
+      <div class="mockup-tab">Report Win</div>
+      <div class="mockup-tab">Credits</div>
     </div>
     <div class="mockup-body">
       <div class="mockup-card">
         <div class="mockup-pos">#1 · 3 votes</div>
         <div class="mockup-song">
-          <div class="mockup-art mockup-art-1"></div>
+          <div class="mockup-art"></div>
           <div>
             <div class="mockup-song-title">God's Plan</div>
             <div class="mockup-song-artist">Drake · Sarah</div>
           </div>
         </div>
         <div class="mockup-vote-row">
-          <div class="mockup-vote mv-up">▲ Up -5cr</div>
-          <div class="mockup-vote mv-down">▼ Down -5cr</div>
-          <div class="mockup-vote mv-one">🚀 #1 -30cr</div>
-          <div class="mockup-vote mv-guard">🛡 Guard -15cr</div>
+          <div class="mockup-vote">▲ Up −5cr</div>
+          <div class="mockup-vote">▼ Down −5cr</div>
+          <div class="mockup-vote accent">↑ #1 −30cr</div>
+          <div class="mockup-vote">◇ Guard −15cr</div>
         </div>
       </div>
       <div class="mockup-card">
@@ -1481,10 +433,10 @@
           </div>
         </div>
         <div class="mockup-vote-row">
-          <div class="mockup-vote mv-up">▲ Up -5cr</div>
-          <div class="mockup-vote mv-down">▼ Down -5cr</div>
-          <div class="mockup-vote mv-one">🚀 #1 -30cr</div>
-          <div class="mockup-vote mv-guard">🛡 Guard -15cr</div>
+          <div class="mockup-vote">▲ Up −5cr</div>
+          <div class="mockup-vote">▼ Down −5cr</div>
+          <div class="mockup-vote accent">↑ #1 −30cr</div>
+          <div class="mockup-vote">◇ Guard −15cr</div>
         </div>
       </div>
       <div class="mockup-card">
@@ -1497,100 +449,91 @@
           </div>
         </div>
         <div class="mockup-vote-row">
-          <div class="mockup-vote mv-up">▲ Up -5cr</div>
-          <div class="mockup-vote mv-down">▼ Down -5cr</div>
-          <div class="mockup-vote mv-one">🚀 #1 -30cr</div>
-          <div class="mockup-vote mv-guard">🛡 Guard -15cr</div>
+          <div class="mockup-vote">▲ Up −5cr</div>
+          <div class="mockup-vote">▼ Down −5cr</div>
+          <div class="mockup-vote accent">↑ #1 −30cr</div>
+          <div class="mockup-vote">◇ Guard −15cr</div>
         </div>
       </div>
     </div>
   </div>
 </div>
 
-<!-- ── HOW IT WORKS ── -->
 <section class="section" id="how-it-works">
-  <div class="fade-in">
-    <div class="section-label">How it works</div>
-    <h2 class="section-title">Credits in. Songs out.</h2>
-    <p class="section-sub">A simple loop that makes work feel a little more fun every day.</p>
+  <div class="section-head fade-in">
+    <div class="label">How it works</div>
+    <div>
+      <h2 class="title">Credits in.<br><span class="serif accent">Songs out.</span></h2>
+      <p class="lede">A simple loop that makes work feel a little more fun every day.</p>
+    </div>
   </div>
 
   <div class="steps fade-in">
     <div class="step">
-      <span class="step-num">01</span>
-      <h3>Earn credits</h3>
+      <span class="step-num">01 / Earn</span>
+      <h3>Hit a milestone.</h3>
       <p>Complete a task, hit a goal, or get recognized by your manager. Credits land in your account automatically — or admins award them manually in seconds.</p>
     </div>
     <div class="step">
-      <span class="step-num">02</span>
-      <h3>Spend to request</h3>
-      <p>Search any song from a catalog of millions and add it to the queue. Vote up songs you love, vote down songs you don't. Burn credits to jump to #1.</p>
+      <span class="step-num">02 / Spend</span>
+      <h3>Request a song.</h3>
+      <p>Search any song from a catalog of millions and add it to the queue. Vote up the songs you love, vote down the ones you don't. Burn credits to jump to #1.</p>
     </div>
     <div class="step">
-      <span class="step-num">03</span>
-      <h3>Music plays</h3>
-      <p>The queue plays automatically through your office speakers. Admin controls Play, Pause, Skip. The team controls everything else.</p>
+      <span class="step-num">03 / Play</span>
+      <h3>The room runs itself.</h3>
+      <p>The queue plays automatically through your office speakers. Admins control Play, Pause, Skip. The team controls everything else.</p>
     </div>
   </div>
 </section>
 
-<!-- ── TESTIMONIALS ── -->
 <section class="section" style="padding-top: 0;">
-  <div class="fade-in">
-    <div class="section-label">From the field</div>
-    <h2 class="section-title">Teams that use it.</h2>
+  <div class="section-head fade-in">
+    <div class="label">From the field</div>
+    <h2 class="title">Teams that <span class="serif accent">use it.</span></h2>
   </div>
 
   <div class="testimonials fade-in">
     <div class="testimonial">
       <p class="testimonial-quote">"The aux cord wars are finally over. Our floor actually sounds like a team again — no one's hogging the speaker, no one's grumbling about whose playlist is on."</p>
       <div class="testimonial-author">
-        <div class="testimonial-avatar">M</div>
-        <div>
-          <div class="testimonial-name">Maya</div>
-          <div class="testimonial-role">Head of People · 40-person sales floor</div>
-        </div>
+        <div class="testimonial-name">Maya</div>
+        <div class="testimonial-role">Head of People · 40-person sales floor</div>
       </div>
     </div>
 
     <div class="testimonial">
       <p class="testimonial-quote">"Wired it into our CRM in an afternoon. Now when a rep closes a deal, the room cheers and their walk-up song plays. That's the whole loop."</p>
       <div class="testimonial-author">
-        <div class="testimonial-avatar">D</div>
-        <div>
-          <div class="testimonial-name">Devon</div>
-          <div class="testimonial-role">RevOps Lead · B2B SaaS</div>
-        </div>
+        <div class="testimonial-name">Devon</div>
+        <div class="testimonial-role">RevOps Lead · B2B SaaS</div>
       </div>
     </div>
 
     <div class="testimonial">
       <p class="testimonial-quote">"Reps started chasing the small wins again just to earn credits. I didn't expect a jukebox to move the leaderboard, but here we are."</p>
       <div class="testimonial-author">
-        <div class="testimonial-avatar">P</div>
-        <div>
-          <div class="testimonial-name">Priya</div>
-          <div class="testimonial-role">VP Sales · Inside sales team</div>
-        </div>
+        <div class="testimonial-name">Priya</div>
+        <div class="testimonial-role">VP Sales · Inside sales team</div>
       </div>
     </div>
   </div>
 </section>
 
-<!-- ── FOR WHO ── -->
 <section class="section" id="for-teams" style="padding-top: 0;">
-  <div class="fade-in">
-    <div class="section-label">Who it's for</div>
-    <h2 class="section-title">Two ways to use it.</h2>
-    <p class="section-sub">Whether you run a team of 5 or 500, or just want a smarter playlist.</p>
+  <div class="section-head fade-in">
+    <div class="label">Who it's for</div>
+    <div>
+      <h2 class="title">Two ways<br>to <span class="serif accent">use it.</span></h2>
+      <p class="lede">Whether you run a team of five or five hundred, or you just want a smarter playlist.</p>
+    </div>
   </div>
 
   <div class="use-cases fade-in">
-    <div class="use-card office">
-      <div class="use-card-accent"></div>
-      <div class="use-tag">🏢 Office Plan</div>
-      <h3>Your whole office,<br>engaged.</h3>
-      <p>Connect your tools, set credit values for milestones that matter to your team, and watch engagement go up. Works with any webhook-enabled platform, or manually through the admin panel.</p>
+    <div class="use-card">
+      <div class="use-tag">Office plan</div>
+      <h3>Your whole office, <em>engaged.</em></h3>
+      <p>Connect your tools, set credit values for the milestones that matter, and watch engagement go up. Works with any webhook-enabled platform, or manually through the admin panel.</p>
       <ul class="use-features">
         <li>Unlimited team members</li>
         <li>Webhook sync with any platform</li>
@@ -1601,11 +544,10 @@
       </ul>
     </div>
 
-    <div class="use-card room">
-      <div class="use-card-accent"></div>
-      <div class="use-tag">🎧 Personal Room</div>
-      <h3>Your playlist,<br>democratized.</h3>
-      <p>Create a room, share a link, let up to 4 friends vote on what plays. Perfect for road trips, pregames, study sessions, or anywhere you pass the aux.</p>
+    <div class="use-card">
+      <div class="use-tag">Personal room</div>
+      <h3>Your playlist, <em>democratized.</em></h3>
+      <p>Create a room, share a link, let up to four friends vote on what plays. Made for road trips, pregames, study sessions, or anywhere you pass the aux.</p>
       <ul class="use-features">
         <li>Up to 4 members per room</li>
         <li>Shareable join link</li>
@@ -1618,120 +560,117 @@
   </div>
 </section>
 
-<!-- ── FEATURES ── -->
 <section class="section" style="padding-top: 0;">
-  <div class="fade-in">
-    <div class="section-label">Features</div>
-    <h2 class="section-title">Built for real offices.</h2>
+  <div class="section-head fade-in">
+    <div class="label">Features</div>
+    <h2 class="title">Built for <span class="serif accent">real offices.</span></h2>
   </div>
 
   <div class="features-grid fade-in">
     <div class="feature-card">
-      <div class="feature-icon fi-blue">🎵</div>
+      <span class="feature-num">01</span>
       <h3>Massive song catalog</h3>
       <p>Search and request from a catalog of millions of tracks. No limits on what your team can play.</p>
     </div>
     <div class="feature-card">
-      <div class="feature-icon fi-green">⚡</div>
+      <span class="feature-num">02</span>
       <h3>Live credit system</h3>
-      <p>Credits are awarded instantly when milestones fire. Every vote costs credits. Real stakes, real fun.</p>
+      <p>Credits award the instant a milestone fires. Every vote costs credits. Real stakes, real fun.</p>
     </div>
     <div class="feature-card">
-      <div class="feature-icon fi-amber">🔗</div>
+      <span class="feature-num">03</span>
       <h3>Any platform sync</h3>
-      <p>Connects to Salesforce, HubSpot, Monday, Jira, or any platform that can send a webhook. Award credits for anything that matters.</p>
+      <p>Connects to Salesforce, HubSpot, Monday, Jira, or anything that can fire a webhook.</p>
     </div>
     <div class="feature-card">
-      <div class="feature-icon fi-blue">📺</div>
+      <span class="feature-num">04</span>
       <h3>TV leaderboard</h3>
-      <p>Dedicated display mode showing the credit leaderboard. Put it on your office TV to keep the energy up all week.</p>
+      <p>A dedicated display mode for the credit leaderboard. Put it on your office TV; let it run.</p>
     </div>
     <div class="feature-card">
-      <div class="feature-icon fi-green">🏢</div>
+      <span class="feature-num">05</span>
       <h3>Office Friendly mode</h3>
-      <p>One toggle in the admin panel filters all explicit content from search results and the fallback playlist.</p>
+      <p>One toggle in the admin panel filters all explicit content from search and the fallback playlist.</p>
     </div>
     <div class="feature-card">
-      <div class="feature-icon fi-amber">🔒</div>
+      <span class="feature-num">06</span>
       <h3>Private by default</h3>
       <p>Each office is fully isolated. Join codes control access. Regenerate your code instantly at any time.</p>
     </div>
   </div>
 </section>
 
-<!-- ── PRICING ── -->
 <section class="section" id="pricing" style="padding-top: 0;">
-  <div class="fade-in">
-    <div class="section-label">Pricing</div>
-    <h2 class="section-title">Simple, honest pricing.</h2>
-    <p class="section-sub">Free to join. Pay only to create and run your own space.</p>
+  <div class="section-head fade-in">
+    <div class="label">Pricing</div>
+    <div>
+      <h2 class="title">Simple, <span class="serif accent">honest</span> pricing.</h2>
+      <p class="lede">Free to join. Pay only to create and run your own space.</p>
+    </div>
   </div>
 
   <div class="billing-toggle fade-in">
-    <button type="button" id="toggle-monthly" class="billing-label" onclick="setBilling('monthly')" style="color: var(--ink); font-weight: 700;">Monthly</button>
+    <button type="button" id="toggle-monthly" class="billing-label active" onclick="setBilling('monthly')">Monthly</button>
     <button type="button" class="billing-switch" onclick="toggleBilling()" aria-label="Toggle billing period">
       <span class="billing-knob" id="billing-knob"></span>
     </button>
-    <button type="button" id="toggle-annual" class="billing-label" onclick="setBilling('annual')" style="color: var(--ink3); font-weight: 600;">Annual</button>
+    <button type="button" id="toggle-annual" class="billing-label" onclick="setBilling('annual')">Annual</button>
     <span class="billing-save">Save ~32%</span>
   </div>
 
-  <div class="pricing-wrap fade-in">
-    <div class="pricing-grid">
-      <div class="price-card">
-        <div class="price-label">Member</div>
-        <div class="price-amount">$0</div>
-        <div class="price-per">forever free</div>
-        <div class="price-desc">Join any office or room someone shares with you. Request songs, vote, and compete on the leaderboard.</div>
-        <ul class="price-features">
-          <li>Join with a code or link</li>
-          <li>Request any song you want</li>
-          <li>Vote on the queue</li>
-          <li>Earn credits from milestones</li>
-          <li>View leaderboard</li>
-        </ul>
-        <a href="https://app.myofficedj.com" class="price-btn price-btn-outline">Join a room →</a>
-      </div>
+  <div class="pricing-grid fade-in">
+    <div class="price-card">
+      <div class="price-label">Member</div>
+      <div class="price-amount">$0</div>
+      <div class="price-per">forever free</div>
+      <div class="price-desc">Join any office or room someone shares with you. Request songs, vote, and compete on the leaderboard.</div>
+      <ul class="price-features">
+        <li>Join with a code or link</li>
+        <li>Request any song</li>
+        <li>Vote on the queue</li>
+        <li>Earn credits from milestones</li>
+        <li>View the leaderboard</li>
+      </ul>
+      <a href="https://app.myofficedj.com" class="price-btn price-btn-outline">Join a room →</a>
+    </div>
 
-      <div class="price-card featured">
-        <div class="price-label">Office</div>
-        <div class="price-amount" id="office-price">$49</div>
-        <div class="price-per" id="office-per">per month · billed monthly</div>
-        <div class="price-desc">Everything your office needs. Unlimited team members, webhook integrations, and full admin controls.</div>
-        <ul class="price-features">
-          <li>Unlimited team members</li>
-          <li>Webhook sync with any platform</li>
-          <li>Custom credit rules</li>
-          <li>Admin panel + TV mode</li>
-          <li>Office Friendly filter</li>
-          <li>Priority support</li>
-        </ul>
-        <button type="button" data-plan="office" class="price-btn price-btn-dark" onclick="startCheckout('office')">Start your office →</button>
-      </div>
+    <div class="price-card featured">
+      <div class="price-label">Office</div>
+      <div class="price-amount" id="office-price">$49</div>
+      <div class="price-per" id="office-per">per month · billed monthly</div>
+      <div class="price-desc">Everything your office needs. Unlimited team members, webhook integrations, and full admin controls.</div>
+      <ul class="price-features">
+        <li>Unlimited team members</li>
+        <li>Webhook sync with any platform</li>
+        <li>Custom credit rules</li>
+        <li>Admin panel + TV mode</li>
+        <li>Office Friendly filter</li>
+        <li>Priority support</li>
+      </ul>
+      <button type="button" data-plan="office" class="price-btn price-btn-dark" onclick="startCheckout('office')">Start your office →</button>
+    </div>
 
-      <div class="price-card">
-        <div class="price-label">Personal Room</div>
-        <div class="price-amount" id="room-price">$4.99</div>
-        <div class="price-per" id="room-per">per month · cancel anytime</div>
-        <div class="price-desc">Create your own listening room, share with up to 4 friends. Perfect for road trips and group sessions.</div>
-        <ul class="price-features">
-          <li>Up to 4 members</li>
-          <li>Shareable room link</li>
-          <li>Real-time voting</li>
-          <li>Daily credit refresh</li>
-          <li>Any connected speaker</li>
-        </ul>
-        <button type="button" data-plan="room" class="price-btn price-btn-outline" onclick="startCheckout('room')">Create a room →</button>
-      </div>
+    <div class="price-card">
+      <div class="price-label">Personal Room</div>
+      <div class="price-amount" id="room-price">$4.99</div>
+      <div class="price-per" id="room-per">per month · cancel anytime</div>
+      <div class="price-desc">Create your own listening room, share with up to four friends. Made for road trips and group sessions.</div>
+      <ul class="price-features">
+        <li>Up to 4 members</li>
+        <li>Shareable room link</li>
+        <li>Real-time voting</li>
+        <li>Daily credit refresh</li>
+        <li>Any connected speaker</li>
+      </ul>
+      <button type="button" data-plan="room" class="price-btn price-btn-outline" onclick="startCheckout('room')">Create a room →</button>
     </div>
   </div>
 </section>
 
-<!-- ── FAQ ── -->
 <section class="section" id="faq" style="padding-top: 0;">
-  <div class="fade-in">
-    <div class="section-label">FAQ</div>
-    <h2 class="section-title">Questions, answered.</h2>
+  <div class="section-head fade-in">
+    <div class="label">FAQ</div>
+    <h2 class="title">Questions, <span class="serif accent">answered.</span></h2>
   </div>
 
   <div class="faq-list fade-in">
@@ -1739,54 +678,50 @@
       <summary>How do credits actually work?</summary>
       <p>Members earn credits when milestones fire — closed deals, completed tasks, manager shoutouts, anything you wire up. They spend credits to request songs, vote up or down, jump a track to #1, or guard a song from being voted off. You decide what each milestone is worth.</p>
     </details>
-
     <details class="faq-item">
       <summary>Do employees need their own music account?</summary>
-      <p>No. Members join with a code or share link — no music account, no signup form. Only the office admin needs to connect a music source once during setup.</p>
+      <p>No. Members join with a code or share link — no music account, no signup form. Only the office admin connects a music source once during setup.</p>
     </details>
-
     <details class="faq-item">
       <summary>Which platforms can we connect for credit rules?</summary>
       <p>Anything that can fire a webhook. Salesforce, HubSpot, Monday, Jira, Zapier, Make, or your own backend. Point it at our endpoint, decide what triggers credits, and you're done. Admins can also award credits manually from the panel.</p>
     </details>
-
     <details class="faq-item">
       <summary>Can we filter explicit content?</summary>
       <p>Yes. The Office Friendly toggle in the admin panel filters explicit tracks from search results and the fallback playlist. One switch, applies to everything.</p>
     </details>
-
     <details class="faq-item">
       <summary>Is each office private?</summary>
       <p>Yes. Every office is fully isolated — separate queue, separate leaderboard, separate credit ledger. Access is gated by a join code that you can regenerate at any time.</p>
     </details>
-
     <details class="faq-item">
       <summary>Can I cancel or switch billing periods?</summary>
-      <p>Cancel anytime from your admin panel — your office stays active through the end of the current billing period. You can switch between monthly and annual on renewal.</p>
+      <p>Cancel anytime from your admin panel — your office stays active through the end of the current billing period. Switch between monthly and annual on renewal.</p>
     </details>
-
     <details class="faq-item">
       <summary>How long does setup take?</summary>
-      <p>About 10 minutes. Connect a music source, set your credit rules, share the join code with the team, and you're live.</p>
+      <p>About ten minutes. Connect a music source, set your credit rules, share the join code with the team, and you're live.</p>
     </details>
   </div>
 </section>
 
-<!-- ── CTA ── -->
-<div class="cta-section fade-in">
-  <h2>Ready to give your<br><em>office a soundtrack?</em></h2>
-  <p>Set up in 10 minutes. Works for sales teams, ops teams, call centers, agencies — any office with a vibe.</p>
-  <div class="cta-actions">
-    <a href="https://app.myofficedj.com" class="btn-white">Get started free →</a>
-    <a href="mailto:hello@myofficedj.com" class="btn-ghost-white">Talk to us</a>
+<section class="cta-section fade-in">
+  <div class="cta-inner">
+    <h2>Ready to give your<br><span class="serif">office a soundtrack?</span></h2>
+    <div class="cta-side">
+      <p>Set up in ten minutes. Works for sales teams, ops teams, call centers, agencies — any office with a vibe.</p>
+      <div class="cta-actions">
+        <a href="https://app.myofficedj.com" class="btn btn-white">Get started free →</a>
+        <a href="mailto:hello@myofficedj.com" class="btn btn-ghost-white">Talk to us</a>
+      </div>
+    </div>
   </div>
-</div>
+</section>
 
-<!-- ── CHECKOUT MODAL ── -->
 <div class="modal-overlay" id="checkout-modal" role="dialog" aria-modal="true" aria-labelledby="checkout-title" hidden>
   <div class="modal-card">
     <button type="button" class="modal-close" onclick="closeCheckout()" aria-label="Close">×</button>
-    <h3 id="checkout-title" class="modal-title">Start your office</h3>
+    <h3 id="checkout-title" class="modal-title">Start your <em>office.</em></h3>
     <p class="modal-desc" id="checkout-desc">We'll set up your office and send you to checkout.</p>
     <form onsubmit="submitCheckout(event)">
       <label class="modal-label">
@@ -1803,12 +738,11 @@
   </div>
 </div>
 
-<!-- ── FOOTER ── -->
 <footer>
-  <div class="footer-logo">
+  <a class="footer-logo" href="/">
     <img src="/brand/logo-mark.svg" alt=""/>
     <span class="fl-word">My<em>OfficeDJ</em></span>
-  </div>
+  </a>
   <ul class="footer-links">
     <li><a href="#how-it-works">How it works</a></li>
     <li><a href="#pricing">Pricing</a></li>
@@ -1820,7 +754,25 @@
 </footer>
 
 <script>
-  // Scroll-triggered fade-ins
+  (function() {
+    const h1 = document.getElementById('hero-title');
+    if (!h1) return;
+    const text = h1.dataset.text || h1.textContent;
+    h1.innerHTML = '';
+    const words = text.split(' ');
+    let delay = 0.25;
+    words.forEach((word, i) => {
+      const wrap = document.createElement('span');
+      wrap.className = 'word';
+      const inner = document.createElement('span');
+      inner.textContent = word;
+      inner.style.setProperty('--d', delay + (i * 0.06) + 's');
+      wrap.appendChild(inner);
+      h1.appendChild(wrap);
+      if (i < words.length - 1) h1.appendChild(document.createTextNode(' '));
+    });
+  })();
+
   const observer = new IntersectionObserver((entries) => {
     entries.forEach(el => {
       if (el.isIntersecting) {
@@ -1828,36 +780,11 @@
         observer.unobserve(el.target);
       }
     });
-  }, { threshold: 0.1 });
-
+  }, { threshold: 0.12 });
   document.querySelectorAll('.fade-in').forEach(el => observer.observe(el));
 
-  // Word-by-word headline reveal — splits the hero H1 into spans, staggers
-  // each word by 60ms so the page feels typeset live instead of pre-rendered.
-  // Honors prefers-reduced-motion via the CSS guard above.
-  document.querySelectorAll('h1').forEach(h => {
-    if (h.dataset.split === '1') return;
-    h.dataset.split = '1';
-    const html = h.innerHTML;
-    // Split on whitespace but preserve <br> and <em> tags as-is by using a
-    // tag-aware tokenizer.
-    const tokens = html.split(/(\s+|<[^>]+>)/).filter(t => t.length > 0);
-    let i = 0;
-    h.innerHTML = tokens.map(t => {
-      if (/^\s+$/.test(t)) return t;
-      if (/^</.test(t)) return t;
-      const delay = (i++ * 60) + 80;
-      return `<span class="word" style="animation-delay:${delay}ms">${t}</span>`;
-    }).join('');
-  });
-
-  // Billing toggle
   let billingPeriod = 'monthly';
-
-  function toggleBilling() {
-    setBilling(billingPeriod === 'monthly' ? 'annual' : 'monthly');
-  }
-
+  function toggleBilling() { setBilling(billingPeriod === 'monthly' ? 'annual' : 'monthly'); }
   function setBilling(period) {
     billingPeriod = period;
     const knob = document.getElementById('billing-knob');
@@ -1869,17 +796,17 @@
     const roomPer = document.getElementById('room-per');
 
     if (period === 'annual') {
-      knob.style.transform = 'translateX(22px)';
-      monthly.style.color = 'var(--ink3)'; monthly.style.fontWeight = '600';
-      annual.style.color = 'var(--ink)'; annual.style.fontWeight = '700';
+      knob.style.transform = 'translateX(20px)';
+      monthly.classList.remove('active');
+      annual.classList.add('active');
       officePrice.textContent = '$399';
       officePer.textContent = 'per year · save $189';
       roomPrice.textContent = '$39';
       roomPer.textContent = 'per year · save $21';
     } else {
       knob.style.transform = 'translateX(0)';
-      monthly.style.color = 'var(--ink)'; monthly.style.fontWeight = '700';
-      annual.style.color = 'var(--ink3)'; annual.style.fontWeight = '600';
+      monthly.classList.add('active');
+      annual.classList.remove('active');
       officePrice.textContent = '$49';
       officePer.textContent = 'per month · billed monthly';
       roomPrice.textContent = '$4.99';
@@ -1887,14 +814,15 @@
     }
   }
 
-  // Checkout modal
   let currentPlan = null;
   const checkoutModal = document.getElementById('checkout-modal');
 
   function startCheckout(plan) {
     currentPlan = plan;
     const isOffice = plan === 'office';
-    document.getElementById('checkout-title').textContent = isOffice ? 'Start your office' : 'Create your room';
+    document.getElementById('checkout-title').innerHTML = isOffice
+      ? 'Start your <em>office.</em>'
+      : 'Create your <em>room.</em>';
     document.getElementById('checkout-desc').textContent = isOffice
       ? "We'll set up your office and send you to checkout."
       : "We'll set up your room and send you to checkout.";
@@ -1918,12 +846,8 @@
     btn.textContent = 'Continue to checkout →';
   }
 
-  checkoutModal.addEventListener('click', (e) => {
-    if (e.target === checkoutModal) closeCheckout();
-  });
-  document.addEventListener('keydown', (e) => {
-    if (e.key === 'Escape' && !checkoutModal.hidden) closeCheckout();
-  });
+  checkoutModal.addEventListener('click', (e) => { if (e.target === checkoutModal) closeCheckout(); });
+  document.addEventListener('keydown', (e) => { if (e.key === 'Escape' && !checkoutModal.hidden) closeCheckout(); });
 
   async function submitCheckout(event) {
     event.preventDefault();
