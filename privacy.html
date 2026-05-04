@@ -10,22 +10,22 @@
 <meta name="theme-color" content="#1a56db"/>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Cabinet+Grotesk:wght@400;500;700;800&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@300;400;500;600;700&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet">
 <style>
   :root {
     --white: #ffffff;
-    --off-white: #f7f6f3;
-    --ink: #0f0e0c;
-    --ink2: #3a3830;
-    --ink3: #8a8578;
-    --blue: #1a56db;
-    --blue-light: #e8effd;
-    --border: #e4e2dc;
+    --off-white: #ffffff;
+    --ink: #0a0a0a;
+    --ink2: #3a3a3a;
+    --ink3: #737373;
+    --blue: #1e40af;
+    --blue-light: #f5f6fb;
+    --border: rgba(10,10,10,0.08);
   }
   * { box-sizing: border-box; margin: 0; padding: 0; }
   html { scroll-behavior: smooth; }
   body {
-    font-family: 'Cabinet Grotesk', sans-serif;
+    font-family: 'Geist', -apple-system, BlinkMacSystemFont, 'Inter', sans-serif;
     background: var(--off-white);
     color: var(--ink2);
     line-height: 1.65;
@@ -74,12 +74,12 @@
     padding: 0 24px;
   }
   h1 {
-    font-size: 38px;
-    font-weight: 800;
-    letter-spacing: -1px;
+    font-size: clamp(48px, 7vw, 96px);
+    font-weight: 600;
+    letter-spacing: -0.03em;
     color: var(--ink);
-    line-height: 1.15;
-    margin-bottom: 8px;
+    line-height: 0.95;
+    margin-bottom: 12px;
   }
   .effective {
     font-size: 13px;
